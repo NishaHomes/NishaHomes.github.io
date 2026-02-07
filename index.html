@@ -1271,7 +1271,7 @@ allLeads[sheet] = leads;
 
 // sending notification to n8n
 
-        async function notifyEmployeeViaN8N({ employeeName, employeeNumber, leadNumber }) {
+        async function notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber }) {
   try {
     await fetch('https://n8n.phishnix.site/webhook/nishahomesNotification', {
       method: 'POST',
@@ -1279,7 +1279,7 @@ allLeads[sheet] = leads;
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        employeeName,
+        assignToname,
         employeeNumber,
         leadNumber
       })
@@ -1334,4 +1334,5 @@ loadEmployees()
         });
     </script>
 </body>
+
 </html>
