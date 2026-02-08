@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Team Members</title>
+ 
+ <style>
+    * {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #f8fafc, #eef2ff);
+  color: #0f172a;
+}
+
+/* Top bar */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0,0,0,.06);
+}
+
+.top-bar h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+a { text-decoration: none; }
+
+.back-btn,
+.add-btn {
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.back-btn:hover,
+.add-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(79,70,229,.35);
+}
+
+/* Cards grid */
+.card-grid {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+/* Card */
+.card {
+  background: rgba(255,255,255,.9);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 20px 40px rgba(15,23,42,.06);
+  animation: fadeUp .5s ease both;
+}
+
+.card h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.delete-btn {
+  margin-top: 14px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(239,68,68,.35);
+}
+
+/* Skeletons */
+.skeleton {
+  height: 90px;
+  border-radius: 18px;
+  background: linear-gradient(
+    90deg,
+    #e5e7eb 25%,
+    #f3f4f6 37%,
+    #e5e7eb 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.hidden { display: none; }
+
+.modal-content {
+  background: #fff;
+  padding: 22px;
+  border-radius: 20px;
+  width: 320px;
+  animation: scaleIn .25s ease both;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.modal-content input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.modal-content button {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content button:not(.cancel) {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+}
+
+.cancel {
+  background: #e5e7eb;
+}
+
+/* Toast alerts */
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background: #fff;
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.15);
+  animation: slideIn .35s ease both;
+  font-size: 14px;
+}
+
+.toast.success { border-left: 4px solid #22c55e; }
+.toast.error { border-left: 4px solid #ef4444; }
+.toast.loading { border-left: 4px solid #6366f1; }
+
+/* Animations */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .top-bar h2 { font-size: 16px; }
+  .card-grid { padding: 16px; }
+}
+
+ </style>
+
+</head>
+<body>
+
+<header class="top-bar">
+    <a href="/index.html">
+  <button class="back-btn">← Back</button>
+  </a>
+  <h2>Team Members</h2>
+  <button class="add-btn" onclick="openModal()">＋ Add Team Member</button>
+</header>
+
+<main id="teamList" class="card-grid"></main>
+
+<!-- Add Modal -->
+<div class="modal hidden" id="modal">
+  <div class="modal-content">
+    <h3>Add Team Member</h3>
+    <input id="memberName" placeholder="Team Member Name" />
+    <input id="memberNumber" placeholder="Phone Number (+91…)" />
+    <button onclick="addMember()">Add</button>
+    <button class="cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+    const API =
+  'https://script.google.com/macros/s/AKfycbzpQbPRBoRdp6lbQO-zyS4PSLi1LDZUmGIx68Jy4T7zKFZZmWf-wGNE-Z-urfzqYuJv/exec';
+
+const list = document.getElementById('teamList');
+
+/* Toast */
+function showToast(type, msg) {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
+}
+
+/* Skeleton loader */
+function showSkeletons(count = 6) {
+  list.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'skeleton';
+    list.appendChild(s);
+  }
+}
+
+/* Load members */
+async function loadMembers() {
+  showSkeletons();
+
+  try {
+    const res = await fetch(`${API}?action=employees`);
+    const json = await res.json();
+
+    list.innerHTML = '';
+
+    json.data.forEach(emp => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h4>${emp.name}</h4>
+        <p>${emp.number}</p>
+        <button class="delete-btn" onclick="removeMember('${emp.number}')">
+          Remove
+        </button>
+      `;
+      list.appendChild(card);
+    });
+
+  } catch {
+    showToast('error', 'Failed to load team members');
+  }
+}
+
+/* Add member */
+async function addMember() {
+  const name = document.getElementById('memberName').value.trim();
+  const number = document.getElementById('memberNumber').value.trim();
+
+  if (!name || !number) {
+    showToast('error', 'Fill all fields');
+    return;
+  }
+
+  showToast('loading', 'Adding team member…');
+
+  try {
+    const res = await fetch(
+      `${API}?sheet=teamassign`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'add_team_member',
+          name,
+          number
+        })
+      }
+    );
+
+    const result = await res.json();
+
+    if (result.success) {
+      showToast('success', result.message);
+      closeModal();
+      loadMembers();
+    } else {
+      showToast('error', result.message);
+    }
+
+  } catch {
+    showToast('error', 'Network error');
+  }
+}
+
+/* Remove member */
+async function removeMember(number) {
+  if (!confirm('Remove this team member?')) return;
+
+  showToast('loading', 'Removing…');
+
+  await fetch(`${API}?sheet=teamassign`, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'remove_team_member',
+      number
+    })
+  });
+
+  showToast('success', 'Team member removed');
+  loadMembers();
+}
+
+/* Modal */
+function openModal() {
+  document.getElementById('modal').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.add('hidden');
+}
+
+/* Init */
+loadMembers();
+
+</script>
+</body>
+</html>

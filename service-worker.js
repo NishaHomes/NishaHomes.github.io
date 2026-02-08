@@ -1,4 +1,4 @@
-const CACHE_NAME = "NishaHomess-v1";
+const CACHE_NAME = "NishaHomess-v2";
 
 const ASSETS = [
   "/",
