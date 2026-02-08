@@ -1208,7 +1208,6 @@ allLeads[sheet] = leads;
   const submitBtn = e.target.querySelector('.submit-btn');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Assigning...';
-
   //sourceful/riverflow-v2-fast-preview
   try {
     // 1️⃣ Assign in teamassign (existing logic)
@@ -1217,8 +1216,9 @@ allLeads[sheet] = leads;
       {
         method: 'POST',
         body: JSON.stringify({
+          action: 'assign_lead',
           employeeNumber: document.getElementById('assignTo').value,
-          lead: leadNumber
+          leadNumberr: leadNumber
         })
       }
     );
@@ -1241,7 +1241,15 @@ allLeads[sheet] = leads;
      
     alert('Lead assigned successfully');
    
+    
+    let employeeNumber = document.getElementById('assignTo').value;
 
+notifyEmployeeViaN8N({
+  assignToname,
+  employeeNumber,
+  leadNumber
+});
+    
     closeModal();
 
   } catch (err) {
@@ -1271,13 +1279,11 @@ allLeads[sheet] = leads;
 
 // sending notification to n8n
 
-        async function notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber }) {
+async function notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber }) {
   try {
     await fetch('https://n8n.phishnix.site/webhook/nishahomesNotification', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         assignToname,
         employeeNumber,
@@ -1288,6 +1294,7 @@ allLeads[sheet] = leads;
     console.error('n8n notification failed', err);
   }
 }
+
 
 
 document.getElementById('assignTo').addEventListener('change', (e) => {
@@ -1334,8 +1341,4 @@ loadEmployees()
         });
     </script>
 </body>
-
 </html>
-
-
-
