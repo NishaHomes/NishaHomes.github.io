@@ -659,7 +659,8 @@
                 <button class="nav-btn" data-sheet="rental">Rental Leads</button>
                 <button class="nav-btn" data-sheet="selling">Selling Leads</button>
                 <button class="nav-btn" data-sheet="agent">Agent Leads</button>
-               <a href="assigned.html"> <button class="nav-btn">Assigned Leads</button></a>
+               <button class="nav-btn" data-sheet="other">other Leads</button>
+                <a href="assigned.html"> <button class="nav-btn">Assigned Leads</button></a>
                <a href="manageteam.html"> <button class="nav-btn">Manage Team</button></a>
             </div>
         </div>
@@ -738,6 +739,7 @@ if ("serviceWorker" in navigator) {
             rental: `${BASE_SHEET_URL}?sheet=Rental`,
             selling: `${BASE_SHEET_URL}?sheet=selling`,
             agent: `${BASE_SHEET_URL}?sheet=agentLeads`,
+            other: `${BASE_SHEET_URL}?sheet=Leads`
         };
 
         let currentSheet = 'buying';
@@ -1106,7 +1108,8 @@ if ("serviceWorker" in navigator) {
                 buying: 'Buying Leads',
                 rental: 'Rental Leads',
                 selling: 'Selling Leads',
-                agent: 'Agent Leads'
+                agent: 'Agent Leads',
+                other: 'Other Leads'
             };
             document.getElementById('pageTitle').textContent = titles[sheet];
             
@@ -1161,6 +1164,12 @@ if (!responseData.success) {
 const leads = (responseData.data || []).filter(lead => {
   const assignTo = lead.AssignTo;
   return !assignTo || String(assignTo).trim() === '';
+
+  if (sheet === 'other') {
+  leads = leads.filter(lead =>
+    String(lead.buyer_type || '').toLowerCase() === 'other'
+  );
+}
 });
 
 
@@ -1182,6 +1191,10 @@ allLeads[sheet] = leads;
                 break;
             case 'agent':
                 renderAgentLeads(leads);
+                break;
+
+            case 'other':
+                renderBuyingLeads(allLeads[sheet]); // ✅ reuse same UI
                 break;
         }
 
