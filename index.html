@@ -1161,16 +1161,31 @@ if (!responseData.success) {
 
 
 
-const leads = (responseData.data || []).filter(lead => {
-  const assignTo = lead.AssignTo;
-  return !assignTo || String(assignTo).trim() === '';
+let leads = responseData.data || [];
 
-  if (sheet === 'other') {
+/* 1️⃣ UNASSIGNED ONLY (global rule) */
+leads = leads.filter(lead => {
+  const assignTo = String(lead.AssignTo || '').trim();
+  return assignTo === '';
+});
+
+/* 2️⃣ TAB-SPECIFIC FILTERING */
+if (sheet === 'buying') {
+  // ❌ remove "other" from buying
   leads = leads.filter(lead =>
-    String(lead.buyer_type || '').toLowerCase() === 'other'
+    String(lead.LeadType || '').toLowerCase() !== 'other'
   );
 }
-});
+
+if (sheet === 'other') {
+  // ✅ show ONLY "other"
+  leads = leads.filter(lead =>
+    String(lead.LeadType || '').toLowerCase() === 'other'
+  );
+}
+
+
+
 
 
 
