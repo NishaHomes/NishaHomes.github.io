@@ -1,8 +1,6 @@
 const CACHE_NAME = "NishaHomess-v2";
 
 const ASSETS = [
-  "/",
-  "/index.html",
   "/leadjourney.html",
   "/manifest.json",
   "/assigned.html"
