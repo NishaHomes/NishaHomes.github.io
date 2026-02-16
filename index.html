@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.png" type="image/png">
     <title>Leads Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
@@ -748,8 +747,13 @@ if ("serviceWorker" in navigator) {
 
         // Format phone number
         function formatPhone(phone) {
-            if (!phone) return '';
-            return '+' + phone.replace('@s.whatsapp.net', '').replace('@c.us', '');
+             const phoneStr = String(phone);
+
+    return '+' + phoneStr
+        .replace('@s.whatsapp.net', '')
+        .replace('@c.us', '')
+        .replace(/\s+/g, '')  // remove spaces
+        .replace(/[^0-9]/g, '');
         }
 
         // Get intent badge class
@@ -1371,5 +1375,4 @@ loadEmployees()
         });
     </script>
 </body>
-
 </html>
