@@ -705,7 +705,14 @@
         // Format phone number
         function formatPhone(phone) {
             if (!phone) return '';
-            return '+' + phone.replace('@s.whatsapp.net', '').replace('@c.us', '');
+            
+             const phoneStr = String(phone);
+
+    return '+' + phoneStr
+        .replace('@s.whatsapp.net', '')
+        .replace('@c.us', '')
+        .replace(/\s+/g, '')  // remove spaces
+        .replace(/[^0-9]/g, '');
         }
 
         // Get intent badge class
