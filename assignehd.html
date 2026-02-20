@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leads Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+   
+   
     <style>
         :root {
             --primary: #2D3142;
@@ -185,7 +187,7 @@
 }
 
 
-.modal{
+.template-modal{
     display:none;
     position:fixed;
     inset:0;
@@ -194,6 +196,8 @@
     align-items:center;
     z-index:9999;
 }
+
+
 
 .modal-content{
     background:#fff;
@@ -511,7 +515,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
             font-weight: 900;
-            color: var(--primary);
+            color: white;
             margin-bottom: 2rem;
         }
 
@@ -523,7 +527,7 @@
             display: block;
             font-size: 0.9rem;
             font-weight: 600;
-            color: var(--text);
+            color: white;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -713,7 +717,7 @@
 </div>
 
  <!-- Template Select Modal -->
-<div id="templateModal" class="modal">
+<div id="templateModal" class="template-modal">
   <div class="modal-content">
       <h3>Select WhatsApp Template</h3>
 
