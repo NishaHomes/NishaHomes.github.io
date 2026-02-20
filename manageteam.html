@@ -236,9 +236,7 @@ a { text-decoration: none; }
 </div>
 
 <script>
-    const API =
-  'https://script.google.com/macros/s/AKfycbzpQbPRBoRdp6lbQO-zyS4PSLi1LDZUmGIx68Jy4T7zKFZZmWf-wGNE-Z-urfzqYuJv/exec';
-
+const API = 'https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api';
 const list = document.getElementById('teamList');
 
 /* Toast */
@@ -265,18 +263,18 @@ async function loadMembers() {
   showSkeletons();
 
   try {
-    const res = await fetch(`${API}?action=employees`);
+    const res = await fetch(`${API}/get-team-assign`);
     const json = await res.json();
 
     list.innerHTML = '';
 
-    json.data.forEach(emp => {
+    json.forEach(emp => {
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
-        <h4>${emp.name}</h4>
-        <p>${emp.number}</p>
-        <button class="delete-btn" onclick="removeMember('${emp.number}')">
+        <h4>${emp["Employee name"]}</h4>
+        <p>${emp["Employee number"]}</p>
+        <button class="delete-btn" onclick="removeMember('${emp["Employee number"]}')">
           Remove
         </button>
       `;
@@ -301,17 +299,11 @@ async function addMember() {
   showToast('loading', 'Adding team member…');
 
   try {
-    const res = await fetch(
-      `${API}?sheet=teamassign`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'add_team_member',
-          name,
-          number
-        })
-      }
-    );
+    const res = await fetch(`${API}/add-team-assign`, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, number })
+    });
 
     const result = await res.json();
 
@@ -334,16 +326,23 @@ async function removeMember(number) {
 
   showToast('loading', 'Removing…');
 
-  await fetch(`${API}?sheet=teamassign`, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'remove_team_member',
-      number
-    })
-  });
+  try {
+    const res = await fetch(`${API}/remove-team-assign/${number}`, {
+      method: 'DELETE'
+    });
 
-  showToast('success', 'Team member removed');
-  loadMembers();
+    const result = await res.json();
+
+    if (result.success) {
+      showToast('success', result.message);
+      loadMembers();
+    } else {
+      showToast('error', result.message);
+    }
+
+  } catch {
+    showToast('error', 'Network error');
+  }
 }
 
 /* Modal */
@@ -357,7 +356,7 @@ function closeModal() {
 
 /* Init */
 loadMembers();
-
 </script>
+
 </body>
 </html>

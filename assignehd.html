@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leads Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2563eb">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <style>
         :root {
             --primary: #2D3142;
@@ -699,15 +694,11 @@
         <div class="nav-container">
             <div class="logo">NishaHomes</div>
             <div class="nav-buttons">
+                <a href="/"> <button class="nav-btn">Home</button></a>
                 <button class="nav-btn active" data-sheet="buying">Buying Leads</button>
                 <button class="nav-btn" data-sheet="rental">Rental Leads</button>
                 <button class="nav-btn" data-sheet="selling">Selling Leads</button>
                 <button class="nav-btn" data-sheet="agent">Agent Leads</button>
-               <button class="nav-btn" data-sheet="other">other Leads</button>
-                <a href="assignehd.html"> <button class="nav-btn">Assigned Leads</button></a>
-               <a href="manageteam.html"> <button class="nav-btn">Manage Team</button></a>
-                <a href="addtemplete.html"> <button class="nav-btn">Add Template</button></a>
-           
             </div>
         </div>
     </nav>
@@ -717,12 +708,11 @@
 
     <div id="bulkActions" style="display:none;gap:10px;">
         <button id="selectAllBtn" class="SelectBtn">Select All</button>
-        <button id="sendSelectedBtn" class="SelectBtn">Select Template</button>
+        <button id="sendSelectedBtn" class="SelectBtn">Send Message</button>
     </div>
 </div>
 
-
-<!-- Template Select Modal -->
+ <!-- Template Select Modal -->
 <div id="templateModal" class="modal">
   <div class="modal-content">
       <h3>Select WhatsApp Template</h3>
@@ -736,7 +726,6 @@
   </div>
 </div>
 
-
     <!-- Main Container -->
     <div class="container">
         <div class="header">
@@ -747,77 +736,24 @@
         <div class="cards-grid" id="cardsGrid"></div>
     </div>
 
+   
 
 
-    <!-- Assign Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <h2>Assign Lead</h2>
-            <form id="assignForm">
-                <input type="hidden" id="leadNumber" name="leadNumber">
-                <input type="hidden" id="SheetURL" name="SheetURL" required>
-                <div class="form-group">
-                    <label class="form-label" for="assignTo">Assign To</label>
-                    
-                    <select id="assignTo" name="assignTo" class="form-input" required>
-                       <option value="">Select employee</option>
-                    </select>
-
-                    <input type="hidden" id="assignToname" name="assignToname">
-                </div>
-                <button type="submit" class="submit-btn">Assign Lead</button>
-            </form>
-        </div>
-    </div>
-
-    <button id="installBtn" style="display:none" class="btn btn-primary">
-  📲 Install App
-</button>
-
-<script>
-
-let selectMode = false;
+    <script>
+        let selectMode = false;
 let selectedLeads = new Map(); // store unique leads
 let wpTemplates = [];
 
 let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById("installBtn").style.display = "block";
-});
-
-document.getElementById("installBtn").addEventListener("click", async () => {
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-});
-</script>
-
-
-    <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js")
-      .then(() => console.log("✅ Service Worker Registered"))
-      .catch(err => console.error("SW error", err));
-  });
-}
-</script>
-
-    <script>
-        // Configuration - UPDATE THESE WITH YOUR GOOGLE SHEETS URLS
-
+        
+        
         let BASE_API_URL = "https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api";
 
 const API_CONFIG = {
     buying: `${BASE_API_URL}/leads`,
     rental: `${BASE_API_URL}/rental-leads`,
     selling: `${BASE_API_URL}/selling-leads`,
-    agent: `${BASE_API_URL}/agent-leads`,
-    other: `${BASE_API_URL}/leads`
+    agent: `${BASE_API_URL}/agent-leads`
 };
 
 
@@ -826,6 +762,8 @@ const API_CONFIG = {
 
         // Format phone number
         function formatPhone(phone) {
+            if (!phone) return '';
+            
              const phoneStr = String(phone);
 
     return '+' + phoneStr
@@ -870,7 +808,7 @@ const API_CONFIG = {
             }
 
             grid.innerHTML = leads.map((lead, index) => `
-                <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
+               <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
      data-phone="${formatPhone(lead['Phone Number'])}">
 
       <input type="checkbox" class="select-checkbox">
@@ -918,13 +856,14 @@ const API_CONFIG = {
                             </span>
                         </div>
                         
-                        ${lead['Lead Intent %'] ? `
-                        <div class="intent-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${lead['Lead Intent %']}%"></div>
-                            </div>
-                        </div>
-                        ` : ''}
+                        ${lead.AssignTo ? `
+<div class="info-row">
+    <span class="info-label">Assigned To</span>
+    <span class="info-value" style="font-weight:600;color:#1abc9c;">
+        👤 ${lead.AssignTo}
+    </span>
+</div>
+` : ''}
                     </div>
                     
                     ${lead.note ? `
@@ -934,14 +873,21 @@ const API_CONFIG = {
                     </div>
                     ` : ''}
                     
-                    <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
-                        Assign Lead
+                    <a class="journey-btn" href="/leadjourney?number=${formatPhone(lead['Phone Number'])}">
+                    <button class="assign-btn">
+
+                           View Lead Journey →
                     </button>
+
+                    </a>
+
                     <button class="assign-btn"
         style="background:#e74c3c;margin-top:10px;"
         onclick="deleteLead('${lead._id}')">
     🗑 Delete Lead
 </button>
+
+
                 </div>
             `).join('');
         }
@@ -1033,9 +979,13 @@ const API_CONFIG = {
                     </div>
                     ` : ''}
                     
-                     <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
-                        Assign Lead
+                    <a class="journey-btn" href="leadjourney.html?number=${formatPhone(lead['Phone Number'])}">
+                    <button class="assign-btn">
+
+                           View Lead Journey →
                     </button>
+
+                    </a>
 
                     <button class="assign-btn"
         style="background:#e74c3c;margin-top:10px;"
@@ -1125,9 +1075,13 @@ const API_CONFIG = {
                     </div>
                     ` : ''}
                     
-                     <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
-                        Assign Lead
+                    <a class="journey-btn" href="leadjourney.html?number=${formatPhone(lead['Phone Number'])}">
+                    <button class="assign-btn">
+
+                           View Lead Journey →
                     </button>
+
+                    </a>
 
                     <button class="assign-btn"
         style="background:#e74c3c;margin-top:10px;"
@@ -1194,19 +1148,20 @@ const API_CONFIG = {
                             <span class="info-value">${lead[' Contact Details']}</span>
                         </div>
                         ` : ''}
+                    
+                        <a class="journey-btn" href="leadjourney.html?number=${formatPhone(lead['Phone Number'])}">
+                    <button class="assign-btn">
 
-
-                        <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
-                        Assign Lead
+                           View Lead Journey →
                     </button>
 
-
+                    </a>
                     <button class="assign-btn"
         style="background:#e74c3c;margin-top:10px;"
         onclick="deleteLead('${lead._id}')">
     🗑 Delete Lead
 </button>
-                    </div>
+                        </div>
                 </div>
             `).join('');
         }
@@ -1228,8 +1183,7 @@ const API_CONFIG = {
                 buying: 'Buying Leads',
                 rental: 'Rental Leads',
                 selling: 'Selling Leads',
-                agent: 'Agent Leads',
-                other: 'Other Leads'
+                agent: 'Agent Leads'
             };
             document.getElementById('pageTitle').textContent = titles[sheet];
             
@@ -1254,190 +1208,64 @@ const API_CONFIG = {
             }
         }
 
-        // Open assign modal
-        function openAssignModal(phoneNumber) {
-            document.getElementById('leadNumber').value = phoneNumber;
-            document.getElementById('modalOverlay').classList.add('active');
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-            document.getElementById('assignForm').reset();
-        }
 
         // Fetch leads from Google Sheets
-   async function fetchLeads(sheet) {
+        async function fetchLeads(sheet) {
     showLoader();
 
     try {
         const url = API_CONFIG[sheet];
         const response = await fetch(url);
-        let leads = await response.json();
+        const leads = await response.json(); // Mongo returns array directly
 
-        /* 1️⃣ UNASSIGNED ONLY */
-        leads = leads.filter(lead => {
-            const assignTo = String(lead.AssignTo || '').trim();
-            return assignTo === '';
-        });
+        // Only show assigned leads
+        const filteredLeads = leads.filter(lead =>
+            lead.AssignTo && String(lead.AssignTo).trim() !== ""
+        );
 
-        /* 2️⃣ TAB-SPECIFIC FILTER */
-        if (sheet === 'buying') {
-            leads = leads.filter(lead =>
-                String(lead.LeadType || '').toLowerCase() !== 'other'
-            );
-        }
-
-        if (sheet === 'other') {
-            leads = leads.filter(lead =>
-                String(lead.LeadType || '').toLowerCase() === 'other'
-            );
-        }
-
-        allLeads[sheet] = leads;
+        allLeads[sheet] = filteredLeads;
 
         switch(sheet) {
             case 'buying':
-                renderBuyingLeads(leads);
+                renderBuyingLeads(filteredLeads);
                 break;
             case 'rental':
-                renderRentalLeads(leads);
+                renderRentalLeads(filteredLeads);
                 break;
             case 'selling':
-                renderSellingLeads(leads);
+                renderSellingLeads(filteredLeads);
                 break;
             case 'agent':
-                renderAgentLeads(leads);
-                break;
-            case 'other':
-                renderBuyingLeads(leads);
+                renderAgentLeads(filteredLeads);
                 break;
         }
 
     } catch (error) {
         console.error(error);
+        document.getElementById('cardsGrid').innerHTML = `
+            <div class="empty-state">
+                <h3>Error loading leads</h3>
+            </div>
+        `;
     } finally {
         hideLoader();
     }
 }
 
-       
-        // Handle assign form submission
-       document.getElementById('assignForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const assignToname = document.getElementById('assignToname').value;
-  const leadNumber = document.getElementById('leadNumber').value;
-  const employeeNumber = document.getElementById('assignTo').value;
-
-  const submitBtn = e.target.querySelector('.submit-btn');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Assigning...';
-
-  try {
-
-    // 1️⃣ Insert in teamAssign collection
-    await fetch('https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/assign-lead', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    collection: currentSheet === 'buying' ? 'Leads' :
-                currentSheet === 'rental' ? 'RentalLeads' :
-                currentSheet === 'selling' ? 'sellingLeads' :
-                currentSheet === 'agent' ? 'agentLeads' : 'Leads',
-    leadNumber: leadNumber,
-    assignTo: assignToname
-  })
-});
-
-
-    
-
-    alert("Lead assigned successfully");
-    closeModal();
-    fetchLeads(currentSheet);
-
-  } catch (err) {
-    console.error(err);
-    alert("Assignment failed");
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Assign Lead';
-  }
-});
-
         
         // Add event listeners to nav buttons
+        
+        
+        
+        
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 switchSheet(btn.dataset.sheet);
             });
         });
 
-        // Close modal on overlay click
-        document.getElementById('modalOverlay').addEventListener('click', (e) => {
-            if (e.target.id === 'modalOverlay') {
-                closeModal();
-            }
-        });
-
-// sending notification to n8n
-
-async function notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber }) {
-  try {
-    await fetch('https://n8n.phishnix.site/webhook/nishahomesNotification', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        assignToname,
-        employeeNumber,
-        leadNumber
-      })
-    });
-  } catch (err) {
-    console.error('n8n notification failed', err);
-  }
-}
-
-
-
-document.getElementById('assignTo').addEventListener('change', (e) => {
-const selectedOption = e.target.options[e.target.selectedIndex];
-  document.getElementById('assignToname').value = selectedOption.textContent;
-});
-
-
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const res = await fetch(
-      'https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/get-team-assign'
-    );
-
-    const employees = await res.json();
-    console.log("Employees:", employees);
-
-    const select = document.getElementById('assignTo');
-    if (!select) {
-      console.error("Select element not found");
-      return;
-    }
-
-    select.innerHTML = '<option value="">Select employee</option>';
-
-    employees.forEach(emp => {
-      const option = document.createElement('option');
-      option.value = emp["Employee number"];
-      option.textContent = emp["Employee name"];
-      select.appendChild(option);
-    });
-
-  } catch (err) {
-    console.error('Failed to load employees', err);
-  }
-});
-
-
-async function deleteLead(id) {
+       
+       async function deleteLead(id) {
 
     if (!confirm("⚠️ Are you sure you want to delete this lead?")) {
         return;
@@ -1478,7 +1306,6 @@ async function deleteLead(id) {
         alert("Error deleting lead");
     }
 }
-
 
 document.getElementById('toggleSelectBtn').addEventListener('click', () => {
 
@@ -1647,20 +1474,21 @@ document.getElementById("confirmSendBtn").addEventListener("click", async () => 
     }
 
     document.getElementById("templateModal").style.display = "none";
-});       
+});
 
-// Initialize
+
+document.addEventListener("DOMContentLoaded", function(){
+    loadTemplates();
+});
+    
+devicePixelRatio
+        // Initialize
         window.addEventListener('load', () => {
             setTimeout(() => {
                 hideLoader();
                 fetchLeads('buying');
             }, 800);
         });
-
-document.addEventListener("DOMContentLoaded", function(){
-    loadTemplates();
-});
-        
     </script>
 </body>
 </html>
