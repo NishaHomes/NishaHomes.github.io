@@ -77,13 +77,25 @@
 
         /* Navigation */
         nav {
-            background: var(--card-bg);
-            box-shadow: 0 2px 20px var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            animation: slideDown 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
+    background: var(--card-bg);
+    box-shadow: 0 2px 20px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+/* Hide state */
+nav.nav-hide {
+    transform: translateY(-100%);
+}
+
+/* Show state */
+nav.nav-show {
+    transform: translateY(0);
+}
 
         @keyframes slideDown {
             from {
@@ -109,6 +121,7 @@
 
         .SelectBtn{
             margin: 10px;
+            margin-right: 20px;
             padding: 8px;
             background: transparent;
             border: 1px solid var(--accent);
@@ -714,10 +727,12 @@
         </div>
     </nav>
 
-    <div id="bulkBar" style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:20px;">
-    <button id="toggleSelectBtn" class="SelectBtn">Select</button>
+    <div id="bulkBar" style="display:flex;justify-content:flex-end;gap:10px;margin-bottom:20px; margin-right: 40px;">
+    <button id="toggleSelectBtn" class="SelectBtn">Send Template</button>
+   
 
     <div id="bulkActions" style="display:none;gap:10px;">
+        <button id="bulkAssignBtn" class="SelectBtn">Bulk Assign</button>
         <button id="selectAllBtn" class="SelectBtn">Select All</button>
         <button id="sendSelectedBtn" class="SelectBtn">Select Template</button>
     </div>
@@ -1329,33 +1344,58 @@ const API_CONFIG = {
   e.preventDefault();
 
   const assignToname = document.getElementById('assignToname').value;
-  const leadNumber = document.getElementById('leadNumber').value;
-  const employeeNumber = document.getElementById('assignTo').value;
+
+  const singleLeadNumber = document.getElementById('leadNumber').value;
 
   const submitBtn = e.target.querySelector('.submit-btn');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Assigning...';
 
+  const collection =
+    currentSheet === 'buying' ? 'Leads' :
+    currentSheet === 'rental' ? 'RentalLeads' :
+    currentSheet === 'selling' ? 'sellingLeads' :
+    currentSheet === 'agent' ? 'agentLeads' : 'Leads';
+
   try {
 
-    // 1️⃣ Insert in teamAssign collection
-    await fetch('https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/assign-lead', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    collection: currentSheet === 'buying' ? 'Leads' :
-                currentSheet === 'rental' ? 'RentalLeads' :
-                currentSheet === 'selling' ? 'sellingLeads' :
-                currentSheet === 'agent' ? 'agentLeads' : 'Leads',
-    leadNumber: leadNumber,
-    assignTo: assignToname
-  })
-});
+    // 🔥 BULK MODE
+    if (!singleLeadNumber && selectedLeads.size > 0) {
 
+      const leadNumbers = Array.from(selectedLeads.keys());
 
-    
+      await fetch(`https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/bulk-assign-leads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          collection: collection,
+          leadNumbers: leadNumbers,
+          assignTo: assignToname
+        })
+      });
 
-    alert("Lead assigned successfully");
+      alert(`${leadNumbers.length} leads assigned successfully`);
+
+      selectedLeads.clear();
+    }
+
+    // 🔹 SINGLE MODE
+    else {
+
+      await fetch(`https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/assign-lead`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          collection: collection,
+          leadNumber: singleLeadNumber,
+          assignTo: assignToname
+        })
+      });
+
+      alert("Lead assigned successfully");
+      console.log(collection)
+    }
+
     closeModal();
     fetchLeads(currentSheet);
 
@@ -1367,7 +1407,6 @@ const API_CONFIG = {
     submitBtn.textContent = 'Assign Lead';
   }
 });
-
         
         // Add event listeners to nav buttons
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1408,7 +1447,7 @@ const selectedOption = e.target.options[e.target.selectedIndex];
   document.getElementById('assignToname').value = selectedOption.textContent;
 });
 
-
+//assigning leads 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch(
@@ -1491,11 +1530,11 @@ document.getElementById('toggleSelectBtn').addEventListener('click', () => {
     if(selectMode){
         grid.classList.add('select-mode');
         document.getElementById('bulkActions').style.display = 'flex';
-        document.getElementById('toggleSelectBtn').textContent = "Cancel";
+        document.getElementById('toggleSelectBtn').textContent = "Unselect";
     } else {
         grid.classList.remove('select-mode');
         document.getElementById('bulkActions').style.display = 'none';
-        document.getElementById('toggleSelectBtn').textContent = "Select";
+        document.getElementById('toggleSelectBtn').textContent = "Send Template";
         selectedLeads.clear();
         document.querySelectorAll('.select-checkbox').forEach(cb => cb.checked = false);
     }
@@ -1662,7 +1701,50 @@ document.getElementById("confirmSendBtn").addEventListener("click", async () => 
 document.addEventListener("DOMContentLoaded", function(){
     loadTemplates();
 });
-        
+       
+
+
+let lastScroll = 0;
+const nav = document.querySelector("nav");
+const scrollThreshold = 10; // avoid small jitters
+
+window.addEventListener("scroll", () => {
+    const currentScroll = window.pageYOffset;
+
+    // Prevent negative scroll on iOS
+    if (currentScroll <= 0) {
+        nav.classList.remove("nav-hide");
+        return;
+    }
+
+    // If scrolling down
+    if (currentScroll > lastScroll && currentScroll > scrollThreshold) {
+        nav.classList.add("nav-hide");
+        nav.classList.remove("nav-show");
+    } 
+    // If scrolling up
+    else if (currentScroll < lastScroll) {
+        nav.classList.remove("nav-hide");
+        nav.classList.add("nav-show");
+    }
+
+    lastScroll = currentScroll;
+});
+
+
+document.getElementById('bulkAssignBtn').addEventListener('click', () => {
+
+    if(selectedLeads.size === 0){
+        alert("Please select at least one lead");
+        return;
+    }
+
+    // Clear single lead value (important)
+    document.getElementById('leadNumber').value = "";
+
+    // Open modal
+    document.getElementById('modalOverlay').classList.add('active');
+});
     </script>
 </body>
 </html>
