@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Lead Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --primary: #2D3142;
+  --accent: #EF8354;
+  --accent-light: #FFA07A;
+  --bg: #FAF9F6;
+  --card-bg: linear-gradient(135deg, var(--primary) 0%, #3d4152 100%);
+  --text: #2D3142;
+  --text-light: #6B7280;
+  --border: #E5E7EB;
+  --shadow: rgba(45, 49, 66, 0.08);
+  --shadow-lg: rgba(45, 49, 66, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Work Sans', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 20px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1 {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px var(--shadow);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.card:hover::before {
+  transform: scaleX(1);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px var(--shadow-lg);
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+  margin: 5px 5px 0 0;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Work Sans', Arial, sans-serif;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+.action-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 131, 84, 0.3);
+}
+
+.noaction-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.lead-item {
+  margin: 8px 0;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  border-left: 3px solid var(--accent);
+  transition: all 0.3s ease;
+}
+
+.lead-item:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.flag-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.wa-btn {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* POPUP */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(45, 49, 66, 0.8);
+  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 2.5rem;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  color: white;
+  animation: modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: scale(0.8) translateY(30px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.close-btn {
+  background:  #EF8354;
+  color: white;
+  float: right;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: var(--accent);
+  color: rgb(190, 139, 139);
+  transform: rotate(90deg) !important;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+
+/* Large desktops (1400px+) */
+@media (min-width: 1400px) {
+  body {
+    padding: 30px 60px;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+  }
+
+  .container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+/* Standard desktops (1024px – 1399px) */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets landscape (768px – 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    padding: 20px 24px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .modal-content {
+    padding: 2rem;
+    width: 85%;
+  }
+}
+
+/* Tablets portrait & large phones (480px – 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  body {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  /* Disable hover lift on touch devices */
+  .card:hover {
+    transform: none;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  button {
+    font-size: 0.8rem;
+    padding: 0.45rem 0.85rem;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    width: 92%;
+    border-radius: 18px;
+    max-height: 85vh;
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+}
+
+/* Small phones (below 480px) */
+@media (max-width: 479px) {
+  body {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0;
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+
+  /* Disable hover lift on touch devices */
+  .card:hover {
+    transform: none;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  button {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.7rem;
+    margin: 4px 4px 0 0;
+    letter-spacing: 0;
+  }
+
+  /* Stack buttons on very small screens */
+  .card > div > button {
+    width: calc(50% - 8px);
+    text-align: center;
+  }
+
+  .lead-item {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+
+  .modal-content {
+    padding: 1.25rem;
+    width: 96%;
+    border-radius: 16px;
+    max-height: 88vh;
+  }
+
+  .close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .card:hover {
+    transform: none;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  .card:hover::before {
+    transform: scaleX(0);
+  }
+
+  .lead-item:active {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  button:active {
+    transform: scale(0.96);
+  }
+
+  button:hover {
+    transform: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1>Admin Lead Action Dashboard</h1>
+<div class="container" id="teamContainer"></div>
+
+<!-- POPUP -->
+<div class="modal" id="popup">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closePopup()">Close</button>
+    <div id="popupData"></div>
+  </div>
+</div>
+
+<script>
+const teamApi="https://api.phishnix.site/api/get-team-assign";
+const endApi="https://api.phishnix.site/api/end-data";
+
+let endData=[];
+
+function parseLeads(str){
+  if(!str || str.trim()==="") return [];
+  return str.replace(/[{}]/g,"").split(",").map(v=>v.trim()).filter(v=>v);
+}
+
+async function loadData(){
+  const endRes=await fetch(endApi);
+  endData=await endRes.json();
+
+  const teamRes=await fetch(teamApi);
+  const team=await teamRes.json();
+
+  const container=document.getElementById("teamContainer");
+
+  team.forEach(emp=>{
+
+    const leads=parseLeads(emp.Leads);
+
+    const card=document.createElement("div");
+    card.className="card";
+
+    card.innerHTML=`
+      <h3>${emp["Employee name"]}</h3>
+      <div>+${emp["Employee number"]}</div>
+      <div style="margin-top:5px;font-size:13px;color:#94a3b8;">
+        Total Leads: ${leads.length}
+      </div>
+      <button class="action-btn">Action Taken</button>
+      <button class="noaction-btn">No Action Yet</button>
+      <div class="result" style="display:none;"></div>
+    `;
+
+    const result=card.querySelector(".result");
+
+    // ================= ACTION TAKEN =================
+    card.querySelector(".action-btn").onclick=()=>{
+
+      // TOGGLE HIDE
+      if(result.style.display==="block" && result.dataset.type==="action"){
+        result.style.display="none";
+        result.innerHTML="";
+        return;
+      }
+
+      result.innerHTML="";
+      result.style.display="block";
+      result.dataset.type="action";
+
+      if(leads.length===0){
+        result.innerHTML="<div>No Leads Assigned</div>";
+        return;
+      }
+
+      const matched=endData.filter(d=>
+        leads.includes("+"+d.Number) || leads.includes(d.Number.toString())
+      );
+
+      if(matched.length===0){
+        result.innerHTML="<div>No actions found</div>";
+        return;
+      }
+
+      matched.forEach(d=>{
+        const div=document.createElement("div");
+        div.className="lead-item";
+        div.innerText=d.Number;
+        div.onclick=()=>showPopup(d);
+        result.appendChild(div);
+      });
+    };
+
+    // ================= NO ACTION =================
+    card.querySelector(".noaction-btn").onclick=()=>{
+
+      // TOGGLE HIDE
+      if(result.style.display==="block" && result.dataset.type==="noaction"){
+        result.style.display="none";
+        result.innerHTML="";
+        return;
+      }
+
+      result.innerHTML="";
+      result.style.display="block";
+      result.dataset.type="noaction";
+
+      if(leads.length===0){
+        result.innerHTML="<div>No Leads Assigned</div>";
+        return;
+      }
+
+      const pending=leads.filter(l=>
+        !endData.some(d=>l==="+"+d.Number||l===d.Number.toString())
+      );
+
+      if(pending.length===0){
+        result.innerHTML="<div>All leads handled</div>";
+        return;
+      }
+
+      pending.forEach(num=>{
+        const div=document.createElement("div");
+        div.className="lead-item";
+
+        div.innerHTML=`
+          ${num}
+          <br>
+          <button class="flag-btn">No Action Taken</button>
+          <button class="wa-btn">WhatsApp Employee</button>
+        `;
+
+        div.querySelector(".flag-btn").onclick=()=>{
+          alert("Lead "+num+" flagged for review.");
+        };
+
+        div.querySelector(".wa-btn").onclick=()=>{
+          const message=`Hello ${emp["Employee name"]},
+
+This is regarding lead ${num} assigned to you.
+
+Our records indicate that no action has been taken yet.
+
+Kindly update the status or initiate follow-up at the earliest.
+
+Regards,
+Admin Team`;
+
+          const waLink=`https://wa.me/${emp["Employee number"]}?text=${encodeURIComponent(message)}`;
+          window.open(waLink,"_blank");
+        };
+
+        result.appendChild(div);
+      });
+    };
+
+    container.appendChild(card);
+  });
+}
+
+function showPopup(data){
+  const popup=document.getElementById("popup");
+  const content=document.getElementById("popupData");
+
+  content.innerHTML=`
+    <h3>Lead Details</h3>
+    <p><strong>Customer:</strong> ${data["Customer Name"]}</p>
+    <p><strong>Number:</strong> ${data.Number}</p>
+    <p><strong>Status:</strong> ${data["Call Status"]}</p>
+    <p><strong>Priority:</strong> ${data["Call Priority"]}</p>
+    <p><strong>Interest:</strong> ${data["Interest Level"]}</p>
+    <p><strong>Lead Score:</strong> ${data["Lead score"]}</p>
+    <p><strong>Property:</strong> ${data["Property Type"]}</p>
+    <p><strong>Location:</strong> ${data["Preferred Location"]}</p>
+    <p><strong>Budget:</strong> ${data["Budget Range"]}</p>
+    <p><strong>Next Call:</strong> ${data["Next Call Date"]}</p>
+    <p><strong>Remarks:</strong> ${data["Caller Remarks"]}</p>
+    <p><strong>Done Status:</strong> ${data.done}</p>
+  `;
+
+  popup.style.display="flex";
+}
+
+function closePopup(){
+  document.getElementById("popup").style.display="none";
+}
+
+loadData();
+</script>
+</body>
+</html>
