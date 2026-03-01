@@ -500,7 +500,7 @@ nav{
 </div>
 
 <script>
-const BASE = "https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/";
+const BASE = "https://api.phishnix.site/api/";
 
 // --- Toast ---
 function showToast(msg, type = "success") {
@@ -624,7 +624,7 @@ async function loadTemplates() {
   } catch(err) {
     renderCards([]);
     document.getElementById("errorBanner").style.display = "block";
-    document.getElementById("errorMsg").textContent = "Could not connect to server. Start the backend at https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api";
+    document.getElementById("errorMsg").textContent = "Could not connect to server. Start the backend at https://api.phishnix.site/api";
   } finally {
     hideLoader();
   }
@@ -637,7 +637,7 @@ async function deleteTemplate(id){
         return;
     }
 
-    const res = await fetch(`https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/wp-template/${id}`, {
+    const res = await fetch(`https://api.phishnix.site/api/wp-template/${id}`, {
         method: "DELETE"
     });
 

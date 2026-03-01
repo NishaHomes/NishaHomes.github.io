@@ -751,7 +751,7 @@ let wpTemplates = [];
 let deferredPrompt;
         
         
-        let BASE_API_URL = "https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api";
+        let BASE_API_URL = "https://api.phishnix.site/api";
 
 const API_CONFIG = {
     buying: `${BASE_API_URL}/leads`,
@@ -1285,7 +1285,7 @@ const API_CONFIG = {
     const collection = collectionMap[currentSheet];
 
     try {
-        const response = await fetch("https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/delete-lead", {
+        const response = await fetch("https://api.phishnix.site/api/delete-lead", {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -1378,7 +1378,7 @@ async function loadTemplates(){
 
     try{
 
-        const res = await fetch("https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/api/wp-template");
+        const res = await fetch("https://api.phishnix.site/api/wp-template");
         const templates = await res.json();
 
         if(!templates || !Array.isArray(templates)){
@@ -1444,7 +1444,7 @@ document.getElementById("confirmSendBtn").addEventListener("click", async () => 
     let mediaUrl = "";
 
     if (template.media) {
-        mediaUrl = `https://pcskkwk4w8gsk0s484kwscgw.coolify.phishnix.site/uploads/${template.media}`;
+        mediaUrl = `https://api.phishnix.site/uploads/${template.media}`;
     }
 
     const finalPayload = {
