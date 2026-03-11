@@ -428,6 +428,12 @@ nav{
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         <span>Back Home</span>
       </a>
+
+      <button class="add-btn" id="aiTemplateBtn" style="background:linear-gradient(135deg,#7C3AED,#A855F7);">
+  <span>✨</span>
+  <span>AI Template</span>
+</button>
+
       <button class="add-btn" id="openModalBtn">
         <span class="plus">+</span>
         <span>New Template</span>
@@ -490,6 +496,40 @@ nav{
         <span class="loading">Creating...</span>
       </button>
     </form>
+  </div>
+</div>
+
+<!-- AI Prompt Modal -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal">
+
+    <button class="modal-close" onclick="closeAIModal()">✕</button>
+
+    <h2 class="modal-title">AI Template Generator</h2>
+    <p class="modal-sub">Describe what WhatsApp message you want</p>
+
+    <div class="form-group">
+      <label class="form-label">Prompt</label>
+
+      <textarea 
+        class="form-textarea" 
+        id="aiPrompt"
+        placeholder="Example: create a WhatsApp message to invite customer for site visit..."
+      ></textarea>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-bottom:15px">
+
+      <button class="submit-btn" onclick="startVoice()" style="flex:1">
+        🎤 Speak
+      </button>
+
+      <button class="submit-btn" onclick="generateTemplate()" style="flex:2">
+        ✨ Generate
+      </button>
+
+    </div>
+
   </div>
 </div>
 
@@ -678,6 +718,105 @@ document.getElementById("wpForm").addEventListener("submit", async function(e) {
   }
 });
 
+
+
+
+/*ai model*/
+
+let recognition;
+
+function startVoice(){
+
+  if(!('webkitSpeechRecognition' in window)){
+    alert("Speech recognition not supported in this browser");
+    return;
+  }
+
+  recognition = new webkitSpeechRecognition();
+  recognition.lang = "en-IN";
+  recognition.start();
+
+  recognition.onresult = function(event){
+
+    const transcript = event.results[0][0].transcript;
+
+    document.getElementById("aiPrompt").value = transcript;
+
+  }
+
+}
+
+
+const aiModal = document.getElementById("aiModal");
+
+document.getElementById("aiTemplateBtn").onclick = () => {
+  aiModal.classList.add("open");
+}
+
+function closeAIModal(){
+  aiModal.classList.remove("open");
+}
+
+
+async function generateTemplate(){
+
+  const prompt = document.getElementById("aiPrompt").value;
+
+  if(!prompt){
+    alert("Enter prompt");
+    return;
+  }
+
+  try{
+
+    const res = await fetch("https://n8n.phishnix.site/webhook/AItemplategenrator",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        type:"template",
+        prompt:prompt
+      })
+    });
+
+    const data = await res.json();
+
+if(!data.name || !data.message){
+  alert("AI returned invalid template");
+  return;
+}
+
+
+
+    closeAIModal();
+
+    openTemplateWithAI(data);
+
+  }catch(err){
+
+    alert("AI generation failed");
+
+  }
+
+}
+
+
+function openTemplateWithAI(data){
+
+  // open modal
+  modalOverlay.classList.add("open");
+
+  // fill values
+  document.getElementById("nameInput").value = data.name || "";
+  document.getElementById("msgInput").value = data.message || "";
+
+  // focus message
+  setTimeout(()=>{
+    document.getElementById("msgInput").focus();
+  },200);
+
+}
 // --- Init ---
 loadTemplates();
 </script>

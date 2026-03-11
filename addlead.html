@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Add Lead</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── RESET & TOKENS ────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Work Sans', sans-serif;
+}
+
+:root {
+  --primary:       #2D3142;
+  --primary-deep:  #1e2235;
+  --accent:        #EF8354;
+  --accent-light:  #FFA07A;
+  --accent-dim:    rgba(239,131,84,.18);
+  --bg:            #FAF9F6;
+  --card-bg:       linear-gradient(135deg, #2D3142 0%, #3d4152 100%);
+  --border:        rgba(255,255,255,.10);
+  --border-focus:  var(--accent);
+  --text-muted:    rgba(255,255,255,.55);
+  --shadow-accent: rgba(239,131,84,.30);
+  --radius-sm:     10px;
+  --radius-md:     14px;
+  --radius-lg:     20px;
+  --transition:    .28s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── BASE ─────────────────────────────────────────────────────── */
+body {
+  background: var(--primary-deep);
+  /* subtle diagonal texture that echoes the card gradient */
+  background-image: radial-gradient(ellipse 80% 50% at 50% -10%,
+      rgba(239,131,84,.12) 0%, transparent 70%);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(24px, 5vw, 60px) clamp(16px, 4vw, 32px);
+}
+
+/* ── NAV ──────────────────────────────────────────────────────── */
+nav {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(28px, 5vw, 48px);
+  animation: fadeDown .7s ease;
+}
+
+.back-btn {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  opacity: .75;
+  transition: opacity var(--transition), transform var(--transition);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.back-btn:hover {
+  opacity: 1;
+  transform: translateX(-5px);
+  border-color: var(--border);
+  background: rgba(255,255,255,.06);
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(17px, 2.5vw, 22px);
+  background: linear-gradient(90deg, #fff 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── CARD ─────────────────────────────────────────────────────── */
+.card {
+  width: 100%;
+  max-width: 720px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 5vw, 48px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.28);
+  animation: fadeUp .8s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* glowing top-edge accent line */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .55s ease;
+}
+
+.card:focus-within::before,
+.card:hover::before {
+  transform: scaleX(1);
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: -.5px;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin-bottom: clamp(20px, 4vw, 36px);
+  font-size: clamp(13px, 2vw, 15px);
+  line-height: 1.55;
+}
+
+/* ── FORM ─────────────────────────────────────────────────────── */
+.form-group {
+  margin-bottom: clamp(14px, 2.5vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  background: rgba(255,255,255,.06);
+  border: 2px solid rgba(255,255,255,.10);
+  border-radius: var(--radius-sm);
+  padding: clamp(10px, 2vw, 14px) clamp(12px, 2vw, 16px);
+  color: #fff;
+  font-size: 15px;
+  transition: border-color var(--transition), box-shadow var(--transition),
+              background var(--transition);
+}
+
+select option {
+  background: var(--primary);
+  color: #fff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255,255,255,.30);
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  background: rgba(255,255,255,.09);
+  border-color: rgba(239,131,84,.40);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(239,131,84,.06);
+  box-shadow: 0 0 0 4px rgba(239,131,84,.14);
+}
+
+/* ── BUTTON ───────────────────────────────────────────────────── */
+button {
+  width: 100%;
+  padding: clamp(12px, 2.5vw, 16px);
+  border: none;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  color: #fff;
+  font-family: 'Work Sans', sans-serif;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+/* shimmer sweep */
+button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg,
+      transparent 30%, rgba(255,255,255,.25) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform .5s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px var(--shadow-accent);
+}
+
+button:hover::after {
+  transform: translateX(100%);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px var(--shadow-accent);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── TOAST ────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: clamp(16px, 3vw, 30px);
+  right:  clamp(16px, 3vw, 30px);
+  background: linear-gradient(135deg, #10b981, #059669);
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(20px) scale(.95);
+  transition: opacity .35s ease, transform .35s ease;
+  box-shadow: 0 8px 24px rgba(16,185,129,.35);
+  z-index: 9999;
+  max-width: min(320px, calc(100vw - 32px));
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── PREVIEW ──────────────────────────────────────────────────── */
+.preview {
+  margin-top: clamp(20px, 3.5vw, 32px);
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: clamp(16px, 3vw, 24px);
+  border-radius: var(--radius-md);
+  display: none;
+  animation: fadeUp .6s ease;
+}
+
+.preview h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(16px, 2.5vw, 20px);
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--accent-light);
+}
+
+.preview-item {
+  margin-bottom: 10px;
+  font-size: clamp(13px, 2vw, 15px);
+  color: rgba(255,255,255,.85);
+  line-height: 1.5;
+}
+
+.preview-item strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── ANIMATIONS ───────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0);     }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-28px); }
+  to   { opacity: 1; transform: translateY(0);     }
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .card {
+    border-radius: var(--radius-md);
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  body {
+    padding: 20px 12px;
+    align-items: stretch;
+  }
+
+  nav {
+    flex-direction: row;        /* keep logo + back on same row */
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    border-radius: var(--radius-sm);
+    padding: 20px 16px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;            /* prevents iOS auto-zoom */
+  }
+
+  .toast {
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    max-width: 100%;
+    text-align: center;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<a href="/" class="back-btn">
+← Back
+</a>
+
+<div class="logo">
+Lead Manager
+</div>
+
+</nav>
+
+
+<div class="card">
+
+<h1>Add New Lead</h1>
+<p class="subtitle">Capture potential customer information</p>
+
+<form id="leadForm">
+
+<div class="form-group">
+<label>Lead Name</label>
+<input required id="name">
+</div>
+
+<div class="form-group">
+<label>Phone Number</label>
+<input required id="phone" placeholder="9170XXXXXXXX">
+</div>
+
+<div class="form-group">
+<label>Location Interested In</label>
+<input id="location">
+</div>
+
+<div class="form-group">
+<label>Property Type</label>
+<select id="ptype">
+<option value="">Select</option>
+<option>Apartment</option>
+<option>Villa</option>
+<option>Plot</option>
+<option>Commercial</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Budget Range</label>
+<input id="budget">
+</div>
+
+<div class="form-group">
+<label>Sub Location (optional)</label>
+<input id="sublocation">
+</div>
+
+<div class="form-group">
+<label>Buying Timeline (optional)</label>
+<select id="timeline">
+<option value="">Select</option>
+<option value="1">Immediate</option>
+<option value="3">3 Months</option>
+<option value="6">6 Months</option>
+<option value="12">1 Year</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Note (optional)</label>
+<textarea id="note"></textarea>
+</div>
+
+<button type="submit">
+Create Lead
+</button>
+
+</form>
+
+<div class="preview" id="preview">
+
+<h3>Lead Preview</h3>
+
+<div class="preview-item" id="pname"></div>
+<div class="preview-item" id="pphone"></div>
+<div class="preview-item" id="plocation"></div>
+<div class="preview-item" id="ptype"></div>
+<div class="preview-item" id="pbudget"></div>
+
+</div>
+
+</div>
+
+
+<div class="toast" id="toast">
+Lead created successfully
+</div>
+
+
+<script>
+
+const API = "https://api.phishnix.site/add-lead"
+
+document.getElementById("leadForm").addEventListener("submit", async (e)=>{
+
+e.preventDefault()
+
+const timelineValue = document.getElementById("timeline").value
+
+const lead = {
+
+"collection":"Leads",
+
+"Lead Name":document.getElementById("name").value,
+
+"Phone Number":document.getElementById("phone").value,
+
+"Location Interested In":document.getElementById("location").value || null,
+
+"Property Type":document.getElementById("ptype").value || null,
+
+"Budget Range":document.getElementById("budget").value || null,
+
+"Sub_location":document.getElementById("sublocation").value || null,
+
+"Buying Timeline": timelineValue ? Number(timelineValue) : null,
+
+"note":document.getElementById("note").value || null,
+
+"LeadType":"other"
+
+}
+
+try{
+
+const res = await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(lead)
+})
+
+const data = await res.json()
+
+showToast()
+
+showPreview(lead)
+
+}catch(err){
+
+toast.style.background="#ef4444"
+toast.innerText="Server error"
+showToast()
+
+}
+
+})
+
+
+function showPreview(lead){
+
+const preview=document.getElementById("preview")
+
+preview.style.display="block"
+
+document.getElementById("pname").innerText="Name: "+lead["Lead Name"]
+document.getElementById("pphone").innerText="Phone: "+lead["Phone Number"]
+document.getElementById("plocation").innerText="Location: "+(lead["Location Interested In"]||"-")
+document.getElementById("ptype").innerText="Property: "+(lead["Property Type"]||"-")
+document.getElementById("pbudget").innerText="Budget: "+(lead["Budget Range"]||"-")
+
+}
+
+const toast = document.getElementById("toast");
+
+function showToast(message="Lead created successfully", type="success"){
+
+  toast.innerText = message;
+
+  if(type === "error"){
+    toast.style.background = "#ef4444";
+  } else {
+    toast.style.background = "#10b981";
+  }
+
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },3000);
+
+}
+
+</script>
+
+</body>
+</html>

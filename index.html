@@ -701,6 +701,31 @@ nav.nav-show {
         a{
             text-decoration: none;
         }
+
+        /* Search Bar */
+
+.search-bar{
+    margin-bottom:30px;
+    display:flex;
+    justify-content:flex-start;
+}
+
+#leadSearch{
+    width:100%;
+    max-width:450px;
+    padding:14px 18px;
+    border-radius:12px;
+    border:2px solid var(--border);
+    font-size:15px;
+    font-family:'Work Sans', sans-serif;
+    transition:all .25s ease;
+}
+
+#leadSearch:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 4px rgba(239,131,84,.15);
+}
     </style>
 </head>
 <body>
@@ -723,7 +748,7 @@ nav.nav-show {
                <a href="manageteam.html"> <button class="nav-btn">Manage Team</button></a>
                 <a href="addtemplete.html"> <button class="nav-btn">Add Template</button></a>
                 <a href="status.html"> <button class="nav-btn">Team Status</button></a>
-           
+                <a href="addlead.html"> <button class="nav-btn">Add Lead</button></a>
             </div>
         </div>
     </nav>
@@ -761,6 +786,15 @@ nav.nav-show {
             <h1 id="pageTitle">Buying Leads</h1>
             <p id="pageSubtitle">Manage and track your property leads</p>
         </div>
+
+        <!-- Search Bar -->
+<div class="search-bar">
+    <input 
+        type="text" 
+        id="leadSearch"
+        placeholder="🔎 Search by name, phone or location..."
+    >
+</div>
 
         <div class="cards-grid" id="cardsGrid"></div>
     </div>
@@ -889,7 +923,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                 <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}">
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -981,7 +1015,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                 <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}">
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -1081,7 +1115,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                 <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}">
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -1173,7 +1207,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}">
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -1292,7 +1326,7 @@ const API_CONFIG = {
         const url = API_CONFIG[sheet];
         const response = await fetch(url);
         let leads = await response.json();
-
+        leads = leads.reverse();
         /* 1️⃣ UNASSIGNED ONLY */
         leads = leads.filter(lead => {
             const assignTo = String(lead.AssignTo || '').trim();
@@ -1746,6 +1780,57 @@ document.getElementById('bulkAssignBtn').addEventListener('click', () => {
 
     // Open modal
     document.getElementById('modalOverlay').classList.add('active');
+});
+
+document.getElementById("leadSearch").addEventListener("input", function(){
+
+    const query = this.value.toLowerCase();
+    const cards = document.querySelectorAll(".lead-card");
+
+    cards.forEach(card => {
+
+        const name = (card.dataset.name || "").toLowerCase();
+        const phone = (card.dataset.phone || "").toLowerCase();
+        const location = (card.dataset.location || "").toLowerCase();
+
+        if(
+            name.includes(query) ||
+            phone.includes(query) ||
+            location.includes(query)
+        ){
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+});
+
+
+document.getElementById("leadSearch").addEventListener("input", function(){
+
+    const query = this.value.toLowerCase();
+    const cards = document.querySelectorAll(".lead-card");
+
+    cards.forEach(card => {
+
+        const name = (card.dataset.name || "").toLowerCase();
+        const phone = (card.dataset.phone || "").toLowerCase();
+        const location = (card.dataset.location || "").toLowerCase();
+
+        if(
+            name.includes(query) ||
+            phone.includes(query) ||
+            location.includes(query)
+        ){
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
 });
     </script>
 </body>

@@ -685,6 +685,31 @@
         a{
             text-decoration: none;
         }
+
+        /* Search Bar */
+
+.search-bar{
+    margin-bottom:30px;
+    display:flex;
+    justify-content:flex-start;
+}
+
+#leadSearch{
+    width:100%;
+    max-width:450px;
+    padding:14px 18px;
+    border-radius:12px;
+    border:2px solid var(--border);
+    font-size:15px;
+    font-family:'Work Sans', sans-serif;
+    transition:all .25s ease;
+}
+
+#leadSearch:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 4px rgba(239,131,84,.15);
+}
     </style>
 </head>
 <body>
@@ -736,6 +761,15 @@
             <h1 id="pageTitle">Buying Leads</h1>
             <p id="pageSubtitle">Manage and track your property leads</p>
         </div>
+
+        <!-- Search Bar -->
+<div class="search-bar">
+    <input 
+        type="text" 
+        id="leadSearch"
+        placeholder="🔎 Search by name, phone or location..."
+    >
+</div>
 
         <div class="cards-grid" id="cardsGrid"></div>
     </div>
@@ -813,7 +847,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}>
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -913,7 +947,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                 <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}">
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -1017,7 +1051,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                 <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}">
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -1113,7 +1147,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}"">
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -1220,8 +1254,8 @@ const API_CONFIG = {
     try {
         const url = API_CONFIG[sheet];
         const response = await fetch(url);
-        const leads = await response.json(); // Mongo returns array directly
-
+        let leads = await response.json(); // Mongo returns array directly
+        leads = leads.reverse();
         // Only show assigned leads
         const filteredLeads = leads.filter(lead =>
             lead.AssignTo && String(lead.AssignTo).trim() !== ""
@@ -1493,6 +1527,32 @@ devicePixelRatio
                 fetchLeads('buying');
             }, 800);
         });
+
+
+        document.getElementById("leadSearch").addEventListener("input", function(){
+
+    const query = this.value.toLowerCase();
+    const cards = document.querySelectorAll(".lead-card");
+
+    cards.forEach(card => {
+
+        const name = (card.dataset.name || "").toLowerCase();
+        const phone = (card.dataset.phone || "").toLowerCase();
+        const location = (card.dataset.location || "").toLowerCase();
+
+        if(
+            name.includes(query) ||
+            phone.includes(query) ||
+            location.includes(query)
+        ){
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+});
     </script>
 </body>
 </html>
