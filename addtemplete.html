@@ -407,6 +407,16 @@ nav{
   .hero-text h1{font-size:2.2rem;}
   .add-btn span{display:none;}
 }
+
+.recording{
+  animation:pulseMic 1s infinite;
+}
+
+@keyframes pulseMic{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
 </style>
 </head>
 <body>
@@ -520,9 +530,9 @@ nav{
 
     <div style="display:flex; gap:10px; margin-bottom:15px">
 
-      <button class="submit-btn" onclick="startVoice()" style="flex:1">
-        🎤 Speak
-      </button>
+      <button class="submit-btn" id="voiceBtn" style="flex:1">
+  🎤 Speak
+</button>
 
       <button class="submit-btn" onclick="generateTemplate()" style="flex:2">
         ✨ Generate
@@ -723,28 +733,105 @@ document.getElementById("wpForm").addEventListener("submit", async function(e) {
 
 /*ai model*/
 
-let recognition;
+let mediaRecorder;
+let audioChunks = [];
+let isRecording = false;
 
-function startVoice(){
+const voiceBtn = document.getElementById("voiceBtn");
 
-  if(!('webkitSpeechRecognition' in window)){
-    alert("Speech recognition not supported in this browser");
-    return;
+async function startRecording(){
+
+  const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+
+  mediaRecorder = new MediaRecorder(stream);
+  audioChunks = [];
+
+  mediaRecorder.ondataavailable = e=>{
+    audioChunks.push(e.data);
+  };
+
+  mediaRecorder.onstop = sendAudio;
+
+  mediaRecorder.start();
+
+  isRecording = true;
+
+  voiceBtn.innerHTML = "⏹ Release / Click to Stop";
+  voiceBtn.style.background = "#ef4444";
+
+}
+
+function stopRecording(){
+
+  if(mediaRecorder){
+    mediaRecorder.stop();
   }
 
-  recognition = new webkitSpeechRecognition();
-  recognition.lang = "en-IN";
-  recognition.start();
+  isRecording = false;
 
-  recognition.onresult = function(event){
+  voiceBtn.innerHTML = "🎤 Speak";
+  voiceBtn.style.background = "";
 
-    const transcript = event.results[0][0].transcript;
+}
 
-    document.getElementById("aiPrompt").value = transcript;
+async function sendAudio(){
+
+  const audioBlob = new Blob(audioChunks,{type:"audio/webm"});
+
+  const formData = new FormData();
+  formData.append("audio",audioBlob,"speech.webm");
+
+  try{
+
+    const res = await fetch("https://voice.phishnix.site/transcribe",{
+      method:"POST",
+      body:formData
+    });
+
+    const data = await res.json();
+
+    document.getElementById("aiPrompt").value = data.text;
+
+  }catch(err){
+
+    alert("Voice recognition failed");
 
   }
 
 }
+
+
+/* Desktop click toggle */
+
+voiceBtn.addEventListener("click",(e)=>{
+
+
+  if(!isRecording){
+    e.preventDefault();
+    startRecording();
+    voiceBtn.classList.add("recording");
+  }else{
+    e.preventDefault();
+    stopRecording();
+    voiceBtn.classList.remove("recording");
+  }
+
+});
+
+
+/* Mobile press-hold */
+
+voiceBtn.addEventListener("touchstart",(e)=>{
+  e.preventDefault();
+  startRecording();
+  voiceBtn.classList.add("recording");
+});
+
+voiceBtn.addEventListener("touchend",(e)=>{
+  e.preventDefault();
+  stopRecording();
+  voiceBtn.classList.remove("recording");
+});
 
 
 const aiModal = document.getElementById("aiModal");
@@ -816,6 +903,26 @@ function openTemplateWithAI(data){
     document.getElementById("msgInput").focus();
   },200);
 
+}
+
+
+function stopRecording(){
+
+  if(mediaRecorder){
+
+    mediaRecorder.stop();
+
+    // stop mic completely
+    mediaRecorder.stream.getTracks().forEach(track=>{
+      track.stop();
+    });
+
+  }
+
+  isRecording = false;
+
+  voiceBtn.innerHTML = "🎤 Speak";
+  voiceBtn.style.background = "";
 }
 // --- Init ---
 loadTemplates();
