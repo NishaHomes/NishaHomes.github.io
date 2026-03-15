@@ -815,7 +815,7 @@ nav.nav-show {
                     <select id="assignTo" name="assignTo" class="form-input" required>
                        <option value="">Select employee</option>
                     </select>
-
+                    <input type="hidden" id="leadName">
                     <input type="hidden" id="assignToname" name="assignToname">
                 </div>
                 <button type="submit" class="submit-btn">Assign Lead</button>
@@ -986,7 +986,7 @@ const API_CONFIG = {
                     </div>
                     ` : ''}
                     
-                    <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
+                    <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}','${lead['Lead Name'] || lead.Name || ''}')">
                         Assign Lead
                     </button>
                     <button class="assign-btn"
@@ -1085,7 +1085,7 @@ const API_CONFIG = {
                     </div>
                     ` : ''}
                     
-                     <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
+                     <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}','${lead['Lead Name'] || lead.Name || ''}')">
                         Assign Lead
                     </button>
 
@@ -1177,7 +1177,7 @@ const API_CONFIG = {
                     </div>
                     ` : ''}
                     
-                     <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
+                     <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}','${lead['Lead Name'] || lead.Name || ''}')">
                         Assign Lead
                     </button>
 
@@ -1248,7 +1248,7 @@ const API_CONFIG = {
                         ` : ''}
 
 
-                        <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}')">
+                        <button class="assign-btn" onclick="openAssignModal('${formatPhone(lead['Phone Number'])}','${lead['Lead Name'] || lead.Name || ''}')">
                         Assign Lead
                     </button>
 
@@ -1307,8 +1307,9 @@ const API_CONFIG = {
         }
 
         // Open assign modal
-        function openAssignModal(phoneNumber) {
+        function openAssignModal(phoneNumber, leadName ) {
             document.getElementById('leadNumber').value = phoneNumber;
+            document.getElementById('leadName').value = leadName;
             document.getElementById('modalOverlay').classList.add('active');
         }
 
@@ -1385,7 +1386,7 @@ const API_CONFIG = {
   const submitBtn = e.target.querySelector('.submit-btn');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Assigning...';
-
+   let leadName = document.getElementById('leadName').value;
   const collection =
     currentSheet === 'buying' ? 'Leads' :
     currentSheet === 'rental' ? 'RentalLeads' :
@@ -1427,8 +1428,10 @@ const API_CONFIG = {
         })
       });
 
+      
       alert("Lead assigned successfully");
-      console.log(collection)
+const employeeNumber = document.getElementById('assignTo').value;
+        notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber, leadName })
     }
 
     closeModal();
@@ -1459,7 +1462,7 @@ const API_CONFIG = {
 
 // sending notification to n8n
 
-async function notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber }) {
+async function notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber, leadName }) {
   try {
     await fetch('https://n8n.phishnix.site/webhook/nishahomesNotification', {
       method: 'POST',
@@ -1467,7 +1470,8 @@ async function notifyEmployeeViaN8N({ assignToname, employeeNumber, leadNumber }
       body: JSON.stringify({
         assignToname,
         employeeNumber,
-        leadNumber
+        leadNumber,
+        leadName
       })
     });
   } catch (err) {
