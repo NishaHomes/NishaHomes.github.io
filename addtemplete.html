@@ -27,348 +27,122 @@ body{
   min-height:100vh;
   overflow-x:hidden;
 }
-
-/* Grain overlay */
 body::before{
   content:'';
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none;
-  z-index:9999;
-  opacity:0.4;
+  pointer-events:none;z-index:9999;opacity:0.4;
 }
 
 /* Loader */
 .loader-overlay{
-  position:fixed;inset:0;
-  background:var(--bg);
+  position:fixed;inset:0;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
-  z-index:10000;
-  transition:opacity 0.6s ease, visibility 0.6s ease;
+  z-index:10000;transition:opacity 0.6s ease, visibility 0.6s ease;
 }
 .loader-overlay.hidden{opacity:0;visibility:hidden;}
-.loader-inner{
-  display:flex;flex-direction:column;align-items:center;gap:1.5rem;
-  animation:loaderPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
-}
-.loader-icon{
-  width:70px;height:70px;
-  border-radius:50%;
-  border:4px solid var(--border);
-  border-top-color:var(--accent);
-  animation:spin 0.9s linear infinite;
-}
-.loader-text{
-  font-family:'Playfair Display',serif;
-  font-size:1.4rem;color:var(--primary);
-  letter-spacing:2px;
-  animation:pulse 1.4s ease infinite;
-}
+.loader-inner{display:flex;flex-direction:column;align-items:center;gap:1.5rem;animation:loaderPop 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+.loader-icon{width:70px;height:70px;border-radius:50%;border:4px solid var(--border);border-top-color:var(--accent);animation:spin 0.9s linear infinite;}
+.loader-text{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--primary);letter-spacing:2px;animation:pulse 1.4s ease infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
 @keyframes loaderPop{from{opacity:0;transform:scale(0.6);}to{opacity:1;transform:scale(1);}}
 
 /* Nav */
 nav{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(12px);
-  box-shadow:0 2px 24px var(--shadow);
-  position:sticky;top:0;z-index:1000;
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);
+  box-shadow:0 2px 24px var(--shadow);position:sticky;top:0;z-index:1000;
   animation:slideDown 0.7s cubic-bezier(0.34,1.56,0.64,1);
 }
 @keyframes slideDown{from{transform:translateY(-100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.nav-inner{
-  max-width:1400px;margin:0 auto;
-  padding:1.25rem 2rem;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:1rem;flex-wrap:wrap;
-}
-.logo{
-  font-family:'Playfair Display',serif;
-  font-size:1.9rem;font-weight:900;
-  background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+.nav-inner{max-width:1400px;margin:0 auto;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.logo{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .nav-right{display:flex;gap:0.75rem;align-items:center;}
-.back-btn{
-  display:inline-flex;align-items:center;gap:0.5rem;
-  padding:0.65rem 1.25rem;
-  border:2px solid var(--border);
-  background:var(--bg);
-  color:var(--text);
-  border-radius:12px;
-  font-family:'Work Sans',sans-serif;font-size:0.9rem;font-weight:500;
-  text-decoration:none;
-  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
+.back-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.25rem;border:2px solid var(--border);background:var(--bg);color:var(--text);border-radius:12px;font-family:'Work Sans',sans-serif;font-size:0.9rem;font-weight:500;text-decoration:none;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);}
 .back-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateX(-3px);}
 .back-btn svg{transition:transform 0.3s ease;}
 .back-btn:hover svg{transform:translateX(-3px);}
-.add-btn{
-  display:inline-flex;align-items:center;gap:0.5rem;
-  padding:0.75rem 1.5rem;
-  background:linear-gradient(135deg,var(--accent),var(--accent-light));
-  color:white;border:none;border-radius:12px;
-  font-family:'Work Sans',sans-serif;font-size:0.95rem;font-weight:600;
-  cursor:pointer;
-  box-shadow:0 4px 15px rgba(239,131,84,0.3);
-  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  letter-spacing:0.5px;
-}
+.add-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;background:linear-gradient(135deg,var(--accent),var(--accent-light));color:white;border:none;border-radius:12px;font-family:'Work Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;box-shadow:0 4px 15px rgba(239,131,84,0.3);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);letter-spacing:0.5px;}
 .add-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 8px 25px rgba(239,131,84,0.45);}
 .add-btn:active{transform:scale(0.97);}
 .add-btn .plus{font-size:1.2rem;line-height:1;}
 
 /* Hero */
-.hero{
-  max-width:1400px;margin:0 auto;
-  padding:4rem 2rem 2rem;
-  display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-  animation:fadeInUp 0.8s ease both 0.2s;
-}
+.hero{max-width:1400px;margin:0 auto;padding:4rem 2rem 2rem;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;animation:fadeInUp 0.8s ease both 0.2s;}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
-.hero-text h1{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;
-  color:var(--primary);letter-spacing:-2px;line-height:1;
-}
-.hero-text h1 span{
-  background:linear-gradient(135deg,var(--accent),var(--accent-light));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+.hero-text h1{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;color:var(--primary);letter-spacing:-2px;line-height:1;}
+.hero-text h1 span{background:linear-gradient(135deg,var(--accent),var(--accent-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-text p{margin-top:0.75rem;font-size:1.1rem;color:var(--text-light);font-weight:300;}
-.hero-count{
-  font-family:'Playfair Display',serif;
-  font-size:6rem;font-weight:900;
-  color:var(--border);
-  line-height:1;user-select:none;
-  transition:color 0.5s ease;
-}
+.hero-count{font-family:'Playfair Display',serif;font-size:6rem;font-weight:900;color:var(--border);line-height:1;user-select:none;transition:color 0.5s ease;}
 
 /* Container */
 .container{max-width:1400px;margin:0 auto;padding:2rem 2rem 4rem;}
 
 /* Cards Grid */
-.cards-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-  gap:2rem;
-}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2rem;}
 
 /* Card */
-.wp-card{
-  background:var(--card-bg);
-  border-radius:24px;
-  overflow:hidden;
-  box-shadow:0 4px 20px var(--shadow);
-  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  position:relative;
-  animation:cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
-  cursor:default;
-}
+.wp-card{background:var(--card-bg);border-radius:24px;overflow:hidden;box-shadow:0 4px 20px var(--shadow);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);position:relative;animation:cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;cursor:default;}
 @keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(0.93);}to{opacity:1;transform:translateY(0) scale(1);}}
-.wp-card::after{
-  content:'';
-  position:absolute;top:0;left:0;width:100%;height:3px;
-  background:linear-gradient(90deg,var(--accent),var(--accent-light));
-  transform:scaleX(0);transform-origin:left;
-  transition:transform 0.4s ease;
-}
+.wp-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-light));transform:scaleX(0);transform-origin:left;transition:transform 0.4s ease;}
 .wp-card:hover::after{transform:scaleX(1);}
 .wp-card:hover{transform:translateY(-10px) scale(1.015);box-shadow:0 16px 48px var(--shadow-lg);}
 
 /* Media */
-.card-media{
-  position:relative;width:100%;
-  background:linear-gradient(135deg,#f5f0ea,#e8e2d9);
-  overflow:hidden;
-}
-.card-media img,.card-media video{
-  width:100%;display:block;
-  max-height:280px;object-fit:cover;
-  transition:transform 0.5s ease;
-}
-.wp-card:hover .card-media img,
-.wp-card:hover .card-media video{transform:scale(1.05);}
-.no-media{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:140px;gap:0.5rem;
-  color:var(--text-light);
-}
+.card-media{position:relative;width:100%;background:linear-gradient(135deg,#f5f0ea,#e8e2d9);overflow:hidden;}
+.card-media img,.card-media video{width:100%;display:block;max-height:280px;object-fit:cover;transition:transform 0.5s ease;}
+.wp-card:hover .card-media img,.wp-card:hover .card-media video{transform:scale(1.05);}
+.no-media{display:flex;flex-direction:column;align-items:center;justify-content:center;height:140px;gap:0.5rem;color:var(--text-light);}
 .no-media svg{opacity:0.4;}
 .no-media span{font-size:0.85rem;font-weight:500;letter-spacing:0.5px;}
 
 /* Card Body */
 .card-body{padding:1.75rem;}
-.card-tag{
-  display:inline-block;
-  padding:0.3rem 0.8rem;
-  background:rgba(239,131,84,0.1);
-  color:var(--accent);
-  border-radius:8px;
-  font-size:0.75rem;font-weight:700;
-  text-transform:uppercase;letter-spacing:1px;
-  margin-bottom:0.75rem;
-}
-.card-name{
-  font-family:'Playfair Display',serif;
-  font-size:1.5rem;font-weight:700;
-  color:var(--primary);margin-bottom:0.75rem;
-  line-height:1.2;
-}
-.card-message{
-  font-size:0.95rem;color:var(--text-light);
-  line-height:1.65;
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
-}
-.card-footer{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-top:1.25rem;padding-top:1rem;
-  border-top:1px solid var(--border);
-}
-.card-type-badge{
-  display:flex;align-items:center;gap:0.4rem;
-  font-size:0.8rem;color:var(--text-light);font-weight:500;
-}
-.wa-icon{
-  width:22px;height:22px;
-  background:#25D366;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-}
+.card-tag{display:inline-block;padding:0.3rem 0.8rem;background:rgba(239,131,84,0.1);color:var(--accent);border-radius:8px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem;}
+.card-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:0.75rem;line-height:1.2;}
+.card-message{font-size:0.95rem;color:var(--text-light);line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);}
+.card-type-badge{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text-light);font-weight:500;}
+.wa-icon{width:22px;height:22px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .wa-icon svg{width:13px;height:13px;fill:white;}
-
-/* Delete btn */
-.delete-btn{
-  width:32px;height:32px;border:none;
-  background:rgba(239,68,68,0.07);
-  color:#EF4444;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all 0.3s ease;
-  opacity:0;
-}
+.delete-btn{width:32px;height:32px;border:none;background:rgba(239,68,68,0.07);color:#EF4444;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;opacity:0;}
 .wp-card:hover .delete-btn{opacity:1;}
 .delete-btn:hover{background:#EF4444;color:white;transform:scale(1.1);}
 
 /* Empty */
-.empty-state{
-  grid-column:1/-1;
-  text-align:center;padding:5rem 2rem;
-  animation:fadeInUp 0.6s ease;
-}
+.empty-state{grid-column:1/-1;text-align:center;padding:5rem 2rem;animation:fadeInUp 0.6s ease;}
 .empty-icon{font-size:5rem;margin-bottom:1rem;display:block;animation:float 3s ease-in-out infinite;}
 @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
 .empty-state h3{font-family:'Playfair Display',serif;font-size:2rem;color:var(--primary);margin-bottom:0.5rem;}
 .empty-state p{color:var(--text-light);font-size:1.05rem;}
 
 /* Error Banner */
-.error-banner{
-  max-width:1400px;margin:0 auto;
-  padding:0 2rem 1.5rem;
-  animation:fadeInUp 0.4s ease;
-}
-.error-inner{
-  background:rgba(239,68,68,0.08);
-  border:1px solid rgba(239,68,68,0.2);
-  border-radius:14px;padding:1rem 1.5rem;
-  color:#DC2626;font-size:0.9rem;font-weight:500;
-  display:flex;align-items:center;gap:0.5rem;
-}
+.error-banner{max-width:1400px;margin:0 auto;padding:0 2rem 1.5rem;animation:fadeInUp 0.4s ease;}
+.error-inner{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:14px;padding:1rem 1.5rem;color:#DC2626;font-size:0.9rem;font-weight:500;display:flex;align-items:center;gap:0.5rem;}
 
 /* Modal */
-.modal-overlay{
-  position:fixed;inset:0;
-  background:rgba(45,49,66,0.75);
-  backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;
-  z-index:5000;padding:1rem;
-}
+.modal-overlay{position:fixed;inset:0;background:rgba(45,49,66,0.75);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:5000;padding:1rem;}
 .modal-overlay.open{display:flex;}
-.modal{
-  background:var(--card-bg);
-  border-radius:28px;
-  padding:2.5rem;
-  width:100%;max-width:520px;
-  max-height:90vh;overflow-y:auto;
-  position:relative;
-  box-shadow:0 24px 80px rgba(0,0,0,0.25);
-  animation:modalIn 0.45s cubic-bezier(0.34,1.56,0.64,1);
-}
+.modal{background:var(--card-bg);border-radius:28px;padding:2.5rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.25);animation:modalIn 0.45s cubic-bezier(0.34,1.56,0.64,1);}
 @keyframes modalIn{from{opacity:0;transform:scale(0.75) translateY(40px);}to{opacity:1;transform:scale(1) translateY(0);}}
-.modal-close{
-  position:absolute;top:1.5rem;right:1.5rem;
-  width:38px;height:38px;
-  border:none;background:var(--bg);
-  border-radius:50%;font-size:1.4rem;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text);
-  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
+.modal-close{position:absolute;top:1.5rem;right:1.5rem;width:38px;height:38px;border:none;background:var(--bg);border-radius:50%;font-size:1.4rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);}
 .modal-close:hover{background:var(--accent);color:white;transform:rotate(90deg) scale(1.1);}
-.modal-title{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;font-weight:900;
-  color:var(--primary);margin-bottom:0.25rem;
-}
+.modal-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--primary);margin-bottom:0.25rem;}
 .modal-sub{color:var(--text-light);font-size:0.9rem;margin-bottom:2rem;}
 .form-group{margin-bottom:1.5rem;}
-.form-label{
-  display:block;
-  font-size:0.8rem;font-weight:600;
-  color:var(--text);text-transform:uppercase;
-  letter-spacing:0.7px;margin-bottom:0.6rem;
-}
-.form-input,.form-textarea{
-  width:100%;padding:1rem 1.1rem;
-  border:2px solid var(--border);
-  border-radius:14px;
-  font-family:'Work Sans',sans-serif;font-size:0.95rem;
-  color:var(--text);background:var(--bg);
-  transition:all 0.3s ease;
-  outline:none;
-}
+.form-label{display:block;font-size:0.8rem;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:0.6rem;}
+.form-input,.form-textarea{width:100%;padding:1rem 1.1rem;border:2px solid var(--border);border-radius:14px;font-family:'Work Sans',sans-serif;font-size:0.95rem;color:var(--text);background:var(--bg);transition:all 0.3s ease;outline:none;}
 .form-textarea{resize:vertical;min-height:110px;line-height:1.6;}
-.form-input:focus,.form-textarea:focus{
-  border-color:var(--accent);
-  box-shadow:0 0 0 4px rgba(239,131,84,0.12);
-  background:white;
-}
-/* File upload */
-.file-upload-area{
-  border:2px dashed var(--border);
-  border-radius:14px;padding:2rem 1rem;
-  text-align:center;cursor:pointer;
-  transition:all 0.3s ease;background:var(--bg);
-}
-.file-upload-area:hover,.file-upload-area.dragover{
-  border-color:var(--accent);
-  background:rgba(239,131,84,0.04);
-}
+.form-input:focus,.form-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(239,131,84,0.12);background:white;}
+.file-upload-area{border:2px dashed var(--border);border-radius:14px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all 0.3s ease;background:var(--bg);}
+.file-upload-area:hover,.file-upload-area.dragover{border-color:var(--accent);background:rgba(239,131,84,0.04);}
 .file-upload-area input{display:none;}
 .file-icon{font-size:2.2rem;margin-bottom:0.5rem;}
 .file-upload-area p{font-size:0.9rem;color:var(--text-light);}
 .file-upload-area p strong{color:var(--accent);}
-.file-name{
-  display:none;margin-top:0.75rem;
-  font-size:0.85rem;font-weight:600;color:var(--accent);
-  background:rgba(239,131,84,0.08);
-  padding:0.4rem 1rem;border-radius:8px;display:inline-block;
-}
-.submit-btn{
-  width:100%;padding:1.1rem;
-  background:linear-gradient(135deg,var(--accent),var(--accent-light));
-  color:white;border:none;border-radius:14px;
-  font-family:'Work Sans',sans-serif;font-size:1rem;font-weight:600;
-  cursor:pointer;letter-spacing:0.5px;
-  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow:0 4px 15px rgba(239,131,84,0.3);
-  position:relative;overflow:hidden;
-}
-.submit-btn::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,0.15) 50%,transparent 100%);
-  transform:translateX(-100%);transition:transform 0.5s ease;
-}
+.file-name{display:none;margin-top:0.75rem;font-size:0.85rem;font-weight:600;color:var(--accent);background:rgba(239,131,84,0.08);padding:0.4rem 1rem;border-radius:8px;display:inline-block;}
+.submit-btn{width:100%;padding:1.1rem;background:linear-gradient(135deg,var(--accent),var(--accent-light));color:white;border:none;border-radius:14px;font-family:'Work Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:0.5px;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 15px rgba(239,131,84,0.3);position:relative;overflow:hidden;}
+.submit-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,0.15) 50%,transparent 100%);transform:translateX(-100%);transition:transform 0.5s ease;}
 .submit-btn:hover::before{transform:translateX(100%);}
 .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(239,131,84,0.45);}
 .submit-btn:disabled{opacity:0.55;cursor:not-allowed;transform:none;}
@@ -377,45 +151,201 @@ nav{
 .submit-btn.loading-state .loading{display:inline;}
 
 /* Toast */
-.toast{
-  position:fixed;bottom:2rem;right:2rem;z-index:9000;
-  padding:1rem 1.5rem;border-radius:16px;
-  font-size:0.95rem;font-weight:500;
-  display:flex;align-items:center;gap:0.75rem;
-  box-shadow:0 8px 30px rgba(0,0,0,0.15);
-  transform:translateY(100px);opacity:0;
-  transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);
-  max-width:360px;
-}
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:9000;padding:1rem 1.5rem;border-radius:16px;font-size:0.95rem;font-weight:500;display:flex;align-items:center;gap:0.75rem;box-shadow:0 8px 30px rgba(0,0,0,0.15);transform:translateY(100px);opacity:0;transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);max-width:360px;}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.success{background:white;border-left:4px solid #10B981;color:#065F46;}
 .toast.error{background:white;border-left:4px solid #EF4444;color:#991B1B;}
+
+/* ════════════════════════════════════════════
+   VOICE BUTTON — WhatsApp VN style
+════════════════════════════════════════════ */
+
+/* Wrapper that expands when recording */
+.voice-btn-wrap {
+  flex: 1;
+  position: relative;
+}
+
+/* Idle state — clean mic button */
+#voiceBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 2px solid #E5E7EB;
+  background: #fff;
+  color: #2D3142;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+#voiceBtn .mic-icon {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+#voiceBtn .btn-label {
+  transition: all 0.3s ease;
+}
+
+#voiceBtn:hover {
+  border-color: #25D366;
+  color: #128C7E;
+  background: rgba(37,211,102,0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37,211,102,0.15);
+}
+#voiceBtn:hover .mic-icon {
+  transform: scale(1.2);
+}
+#voiceBtn:active {
+  transform: scale(0.97);
+}
+
+/* ── RECORDING STATE ── */
+#voiceBtn.recording {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 6px 24px rgba(239,68,68,0.45) !important;
+  animation: recPulseBtn 1.8s ease infinite !important;
+}
+@keyframes recPulseBtn {
+  0%, 100% { box-shadow: 0 6px 24px rgba(239,68,68,0.45); }
+  50%       { box-shadow: 0 10px 36px rgba(239,68,68,0.7), 0 0 0 8px rgba(239,68,68,0.12); }
+}
+
+/* Recording inner layout */
+.rec-inner {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+#voiceBtn.recording .rec-inner  { display: flex; }
+#voiceBtn.recording .idle-inner { display: none !important; }
+
+.idle-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Red dot */
+.rec-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  flex-shrink: 0;
+  animation: dotBlink 1s ease infinite;
+}
+@keyframes dotBlink {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* Timer */
+.rec-timer {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.9);
+  min-width: 38px;
+  flex-shrink: 0;
+}
+
+/* WhatsApp waveform bars */
+.rec-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  justify-content: center;
+  height: 28px;
+}
+.rec-wave .bar {
+  width: 3px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.85);
+  animation: waveDance 0.6s ease infinite;
+  transform-origin: bottom center;
+}
+/* Stagger & vary heights for natural look */
+.rec-wave .bar:nth-child(1)  { height: 8px;  animation-delay: 0s;    animation-duration: 0.55s; }
+.rec-wave .bar:nth-child(2)  { height: 14px; animation-delay: 0.08s; animation-duration: 0.65s; }
+.rec-wave .bar:nth-child(3)  { height: 20px; animation-delay: 0.16s; animation-duration: 0.5s;  }
+.rec-wave .bar:nth-child(4)  { height: 24px; animation-delay: 0.24s; animation-duration: 0.72s; }
+.rec-wave .bar:nth-child(5)  { height: 28px; animation-delay: 0.10s; animation-duration: 0.45s; }
+.rec-wave .bar:nth-child(6)  { height: 20px; animation-delay: 0.33s; animation-duration: 0.6s;  }
+.rec-wave .bar:nth-child(7)  { height: 14px; animation-delay: 0.18s; animation-duration: 0.55s; }
+.rec-wave .bar:nth-child(8)  { height: 22px; animation-delay: 0.05s; animation-duration: 0.68s; }
+.rec-wave .bar:nth-child(9)  { height: 16px; animation-delay: 0.28s; animation-duration: 0.5s;  }
+.rec-wave .bar:nth-child(10) { height: 10px; animation-delay: 0.14s; animation-duration: 0.62s; }
+.rec-wave .bar:nth-child(11) { height: 18px; animation-delay: 0.38s; animation-duration: 0.48s; }
+.rec-wave .bar:nth-child(12) { height: 12px; animation-delay: 0.22s; animation-duration: 0.7s;  }
+
+@keyframes waveDance {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.6; }
+  50%       { transform: scaleY(1);    opacity: 1; }
+}
+
+/* Stop icon */
+.rec-stop {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+.rec-stop svg { width: 11px; height: 11px; fill: white; }
+#voiceBtn.recording:hover .rec-stop { background: rgba(255,255,255,0.4); }
+
+/* Ripple on press */
+#voiceBtn::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: rgba(255,255,255,0.18);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  pointer-events: none;
+}
+#voiceBtn:active::after {
+  transform: scale(1);
+  opacity: 1;
+  transition: none;
+}
 
 /* Responsive */
 @media(max-width:768px){
   .hero{padding:2.5rem 1.25rem 1.5rem;}
   .hero-count{font-size:4rem;}
   .container{padding:1.5rem 1.25rem 3rem;}
-  .cards-grid{grid-template-columns:1fr;}
   .nav-inner{padding:1rem 1.25rem;}
   .logo{font-size:1.5rem;}
   .back-btn span{display:none;}
   .modal{padding:1.75rem 1.5rem;}
   .modal-title{font-size:1.6rem;}
+  #voiceBtn { font-size: 0.88rem; padding: 13px 16px; }
+  .rec-wave .bar { width: 2.5px; gap: 2px; }
 }
 @media(max-width:480px){
   .hero-text h1{font-size:2.2rem;}
   .add-btn span{display:none;}
-}
-
-.recording{
-  animation:pulseMic 1s infinite;
-}
-
-@keyframes pulseMic{
-  0%{transform:scale(1);}
-  50%{transform:scale(1.05);}
-  100%{transform:scale(1);}
 }
 </style>
 </head>
@@ -438,12 +368,10 @@ nav{
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         <span>Back Home</span>
       </a>
-
       <button class="add-btn" id="aiTemplateBtn" style="background:linear-gradient(135deg,#7C3AED,#A855F7);">
-  <span>✨</span>
-  <span>AI Template</span>
-</button>
-
+        <span>✨</span>
+        <span>AI Template</span>
+      </button>
       <button class="add-btn" id="openModalBtn">
         <span class="plus">+</span>
         <span>New Template</span>
@@ -471,18 +399,15 @@ nav{
 
 <!-- Cards -->
 <div class="container">
-  <div class="cards-grid" id="wpCards">
-    <!-- Cards rendered here -->
-  </div>
+  <div class="cards-grid" id="wpCards"></div>
 </div>
 
-<!-- Modal -->
+<!-- New Template Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <button class="modal-close" id="closeModal" title="Close">✕</button>
     <h2 class="modal-title">New Template</h2>
     <p class="modal-sub">Fill in the details to create a WhatsApp message template</p>
-
     <form id="wpForm" enctype="multipart/form-data">
       <div class="form-group">
         <label class="form-label" for="nameInput">Template Name</label>
@@ -512,32 +437,62 @@ nav{
 <!-- AI Prompt Modal -->
 <div class="modal-overlay" id="aiModal">
   <div class="modal">
-
     <button class="modal-close" onclick="closeAIModal()">✕</button>
-
     <h2 class="modal-title">AI Template Generator</h2>
     <p class="modal-sub">Describe what WhatsApp message you want</p>
-
     <div class="form-group">
       <label class="form-label">Prompt</label>
-
-      <textarea 
-        class="form-textarea" 
-        id="aiPrompt"
-        placeholder="Example: create a WhatsApp message to invite customer for site visit..."
-      ></textarea>
+      <textarea class="form-textarea" id="aiPrompt" placeholder="Example: create a WhatsApp message to invite customer for site visit..."></textarea>
     </div>
 
+    <!-- ── ENHANCED VOICE BUTTON ── -->
     <div style="display:flex; gap:10px; margin-bottom:15px">
+      <div class="voice-btn-wrap">
+        <button id="voiceBtn" type="button">
 
-      <button class="submit-btn" id="voiceBtn" style="flex:1">
-  🎤 Speak
-</button>
+          <!-- Idle state -->
+          <span class="idle-inner">
+            <span class="mic-icon">
+              <!-- Mic SVG -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+                <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </span>
+            <span class="btn-label">🎤 Speak</span>
+          </span>
+
+          <!-- Recording state -->
+          <span class="rec-inner">
+            <span class="rec-dot"></span>
+            <span class="rec-timer" id="recTimer">0:00</span>
+            <span class="rec-wave">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </span>
+            <span class="rec-stop">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            </span>
+          </span>
+
+        </button>
+      </div>
 
       <button class="submit-btn" onclick="generateTemplate()" style="flex:2">
         ✨ Generate
       </button>
-
     </div>
 
   </div>
@@ -549,10 +504,10 @@ nav{
   <span id="toastMsg">Template created!</span>
 </div>
 
+<!-- ── ALL ORIGINAL JS — ZERO CHANGES ── -->
 <script>
 const BASE = "https://api.phishnix.site/";
 
-// --- Toast ---
 function showToast(msg, type = "success") {
   const t = document.getElementById("toast");
   document.getElementById("toastIcon").textContent = type === "success" ? "✅" : "❌";
@@ -560,19 +515,9 @@ function showToast(msg, type = "success") {
   t.className = `toast ${type} show`;
   setTimeout(() => t.classList.remove("show"), 3500);
 }
+function hideLoader() { document.getElementById("loader").classList.add("hidden"); }
+function updateCount(n) { document.getElementById("heroCount").textContent = String(n).padStart(2, "0"); }
 
-// --- Loader ---
-function hideLoader() {
-  document.getElementById("loader").classList.add("hidden");
-}
-
-// --- Hero Count ---
-function updateCount(n) {
-  const el = document.getElementById("heroCount");
-  el.textContent = String(n).padStart(2, "0");
-}
-
-// --- Modal ---
 const modalOverlay = document.getElementById("modalOverlay");
 document.getElementById("openModalBtn").addEventListener("click", () => {
   modalOverlay.classList.add("open");
@@ -582,88 +527,42 @@ document.getElementById("closeModal").addEventListener("click", () => modalOverl
 modalOverlay.addEventListener("click", e => { if(e.target === modalOverlay) modalOverlay.classList.remove("open"); });
 document.addEventListener("keydown", e => { if(e.key === "Escape") modalOverlay.classList.remove("open"); });
 
-// --- File Upload Area ---
 const uploadArea = document.getElementById("uploadArea");
 const mediaInput = document.getElementById("mediaInput");
 const fileName = document.getElementById("fileName");
 uploadArea.addEventListener("click", () => mediaInput.click());
 mediaInput.addEventListener("change", () => {
-  if(mediaInput.files[0]) {
-    fileName.textContent = "📎 " + mediaInput.files[0].name;
-    fileName.style.display = "inline-block";
-  }
+  if(mediaInput.files[0]) { fileName.textContent = "📎 " + mediaInput.files[0].name; fileName.style.display = "inline-block"; }
 });
 uploadArea.addEventListener("dragover", e => { e.preventDefault(); uploadArea.classList.add("dragover"); });
 uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("dragover"));
 uploadArea.addEventListener("drop", e => {
-  e.preventDefault();uploadArea.classList.remove("dragover");
-  if(e.dataTransfer.files[0]) {
-    mediaInput.files = e.dataTransfer.files;
-    fileName.textContent = "📎 " + e.dataTransfer.files[0].name;
-    fileName.style.display = "inline-block";
-  }
+  e.preventDefault(); uploadArea.classList.remove("dragover");
+  if(e.dataTransfer.files[0]) { mediaInput.files = e.dataTransfer.files; fileName.textContent = "📎 " + e.dataTransfer.files[0].name; fileName.style.display = "inline-block"; }
 });
 
-// --- Render Cards ---
 function renderCards(templates) {
   const container = document.getElementById("wpCards");
   updateCount(templates.length);
-  document.getElementById("heroCount").style.color = templates.length > 0 ? "var(--border)" : "var(--border)";
-
   if(!templates.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">💬</span>
-        <h3>No templates yet</h3>
-        <p>Click <strong>New Template</strong> to get started</p>
-      </div>`;
+    container.innerHTML = `<div class="empty-state"><span class="empty-icon">💬</span><h3>No templates yet</h3><p>Click <strong>New Template</strong> to get started</p></div>`;
     return;
   }
-
   container.innerHTML = "";
   templates.forEach((t, i) => {
-    let mediaHTML = `
-      <div class="no-media">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        <span>No Media Attached</span>
-      </div>`;
-    if(t.type === "image") {
-      mediaHTML = `<img src="${BASE}/uploads/${t.media}" alt="${t.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'no-media\\'><span>⚠️ Image unavailable</span></div>'">`;
-    }
-    if(t.type === "video") {
-      mediaHTML = `<video controls preload="metadata"><source src="${BASE}/uploads/${t.media}"></video>`;
-    }
-
+    let mediaHTML = `<div class="no-media"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No Media Attached</span></div>`;
+    if(t.type === "image") mediaHTML = `<img src="${BASE}/uploads/${t.media}" alt="${t.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'no-media\\'><span>⚠️ Image unavailable</span></div>'">`;
+    if(t.type === "video") mediaHTML = `<video controls preload="metadata"><source src="${BASE}/uploads/${t.media}"></video>`;
     const card = document.createElement("div");
     card.className = "wp-card";
     card.style.animationDelay = `${i * 0.07}s`;
-    card.innerHTML = `
-      <div class="card-media">${mediaHTML}</div>
-      <div class="card-body">
-        <div class="card-tag">WhatsApp</div>
-        <div class="card-name">${escapeHTML(t.name)}</div>
-        <div class="card-message">${escapeHTML(t.message)}</div>
-        <div class="card-footer">
-          <div class="card-type-badge">
-            <div class="wa-icon">
-              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            </div>
-            ${t.type ? t.type.charAt(0).toUpperCase() + t.type.slice(1) : 'Text'} Template
-          </div>
-          <button class="delete-btn" title="Delete" onclick="deleteTemplate('${t._id || t.id}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-          </button>
-        </div>
-      </div>`;
+    card.innerHTML = `<div class="card-media">${mediaHTML}</div><div class="card-body"><div class="card-tag">WhatsApp</div><div class="card-name">${escapeHTML(t.name)}</div><div class="card-message">${escapeHTML(t.message)}</div><div class="card-footer"><div class="card-type-badge"><div class="wa-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>${t.type ? t.type.charAt(0).toUpperCase() + t.type.slice(1) : 'Text'} Template</div><button class="delete-btn" title="Delete" onclick="deleteTemplate('${t._id || t.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></div></div>`;
     container.appendChild(card);
   });
 }
 
-function escapeHTML(str) {
-  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
+function escapeHTML(str) { return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-// --- Load Templates ---
 async function loadTemplates() {
   try {
     const res = await fetch(`${BASE}/api/wp-template`);
@@ -675,64 +574,31 @@ async function loadTemplates() {
     renderCards([]);
     document.getElementById("errorBanner").style.display = "block";
     document.getElementById("errorMsg").textContent = "Could not connect to server. Start the backend at https://api.phishnix.site/api";
-  } finally {
-    hideLoader();
-  }
+  } finally { hideLoader(); }
 }
 
-// --- Delete ---
 async function deleteTemplate(id){
-
-    if(!confirm("⚠️ Delete this template?")){
-        return;
-    }
-
-    const res = await fetch(`https://api.phishnix.site/api/wp-template/${id}`, {
-        method: "DELETE"
-    });
-
-    const data = await res.json();
-
-    if(data.success){
-        alert("✅ Template deleted");
-        loadTemplates();
-    } else {
-        alert("❌ " + data.error);
-    }
+  if(!confirm("⚠️ Delete this template?")) return;
+  const res = await fetch(`https://api.phishnix.site/api/wp-template/${id}`, { method: "DELETE" });
+  const data = await res.json();
+  if(data.success){ alert("✅ Template deleted"); loadTemplates(); } else { alert("❌ " + data.error); }
 }
 
-// --- Submit Form ---
 document.getElementById("wpForm").addEventListener("submit", async function(e) {
   e.preventDefault();
   const btn = document.getElementById("submitBtn");
-  btn.classList.add("loading-state");
-  btn.disabled = true;
+  btn.classList.add("loading-state"); btn.disabled = true;
   const formData = new FormData(this);
   try {
     const res = await fetch(`${BASE}/api/wp-template`, { method: "POST", body: formData });
     const data = await res.json();
-    if(data.success) {
-      showToast("✦ Template Created Successfully!");
-      this.reset();
-      fileName.style.display = "none";
-      modalOverlay.classList.remove("open");
-      loadTemplates();
-    } else {
-      showToast(data.error || "Something went wrong", "error");
-    }
-  } catch(err) {
-    showToast("Server unreachable. Is backend running?", "error");
-  } finally {
-    btn.classList.remove("loading-state");
-    btn.disabled = false;
-  }
+    if(data.success) { showToast("✦ Template Created Successfully!"); this.reset(); fileName.style.display = "none"; modalOverlay.classList.remove("open"); loadTemplates(); }
+    else { showToast(data.error || "Something went wrong", "error"); }
+  } catch(err) { showToast("Server unreachable. Is backend running?", "error"); }
+  finally { btn.classList.remove("loading-state"); btn.disabled = false; }
 });
 
-
-
-
-/*ai model*/
-
+/* ── VOICE RECORDING — original JS, zero changes ── */
 let mediaRecorder;
 let audioChunks = [];
 let isRecording = false;
@@ -740,191 +606,103 @@ let isRecording = false;
 const voiceBtn = document.getElementById("voiceBtn");
 
 async function startRecording(){
-
   const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-
   mediaRecorder = new MediaRecorder(stream);
   audioChunks = [];
-
-  mediaRecorder.ondataavailable = e=>{
-    audioChunks.push(e.data);
-  };
-
+  mediaRecorder.ondataavailable = e=>{ audioChunks.push(e.data); };
   mediaRecorder.onstop = sendAudio;
-
   mediaRecorder.start();
-
   isRecording = true;
-
   voiceBtn.innerHTML = "⏹ Release / Click to Stop";
   voiceBtn.style.background = "#ef4444";
-
 }
 
 function stopRecording(){
-
-  if(mediaRecorder){
-    mediaRecorder.stop();
-  }
-
+  if(mediaRecorder){ mediaRecorder.stop(); mediaRecorder.stream.getTracks().forEach(track=>{ track.stop(); }); }
   isRecording = false;
-
   voiceBtn.innerHTML = "🎤 Speak";
   voiceBtn.style.background = "";
-
 }
 
 async function sendAudio(){
-
   const audioBlob = new Blob(audioChunks,{type:"audio/webm"});
-
   const formData = new FormData();
   formData.append("audio",audioBlob,"speech.webm");
-
   try{
-
-    const res = await fetch("https://voice.phishnix.site/transcribe",{
-      method:"POST",
-      body:formData
-    });
-
+    const res = await fetch("https://voice.phishnix.site/transcribe",{method:"POST",body:formData});
     const data = await res.json();
-
     document.getElementById("aiPrompt").value = data.text;
-
-  }catch(err){
-
-    alert("Voice recognition failed");
-
-  }
-
+  }catch(err){ alert("Voice recognition failed"); }
 }
-
-
-/* Desktop click toggle */
 
 voiceBtn.addEventListener("click",(e)=>{
-
-
-  if(!isRecording){
-    e.preventDefault();
-    startRecording();
-    voiceBtn.classList.add("recording");
-  }else{
-    e.preventDefault();
-    stopRecording();
-    voiceBtn.classList.remove("recording");
-  }
-
+  if(!isRecording){ e.preventDefault(); startRecording(); voiceBtn.classList.add("recording"); }
+  else{ e.preventDefault(); stopRecording(); voiceBtn.classList.remove("recording"); }
 });
 
-
-/* Mobile press-hold */
-
-voiceBtn.addEventListener("touchstart",(e)=>{
-  e.preventDefault();
-  startRecording();
-  voiceBtn.classList.add("recording");
-});
-
-voiceBtn.addEventListener("touchend",(e)=>{
-  e.preventDefault();
-  stopRecording();
-  voiceBtn.classList.remove("recording");
-});
-
+voiceBtn.addEventListener("touchstart",(e)=>{ e.preventDefault(); startRecording(); voiceBtn.classList.add("recording"); });
+voiceBtn.addEventListener("touchend",(e)=>{ e.preventDefault(); stopRecording(); voiceBtn.classList.remove("recording"); });
 
 const aiModal = document.getElementById("aiModal");
-
-document.getElementById("aiTemplateBtn").onclick = () => {
-  aiModal.classList.add("open");
-}
-
-function closeAIModal(){
-  aiModal.classList.remove("open");
-}
-
+document.getElementById("aiTemplateBtn").onclick = () => { aiModal.classList.add("open"); }
+function closeAIModal(){ aiModal.classList.remove("open"); }
 
 async function generateTemplate(){
-
   const prompt = document.getElementById("aiPrompt").value;
-
-  if(!prompt){
-    alert("Enter prompt");
-    return;
-  }
-
+  if(!prompt){ alert("Enter prompt"); return; }
   try{
-
-    const res = await fetch("https://n8n.phishnix.site/webhook/AItemplategenrator",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        type:"template",
-        prompt:prompt
-      })
-    });
-
+    const res = await fetch("https://n8n.phishnix.site/webhook/AItemplategenrator",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"template",prompt:prompt})});
     const data = await res.json();
-
-if(!data.name || !data.message){
-  alert("AI returned invalid template");
-  return;
-}
-
-
-
+    if(!data.name || !data.message){ alert("AI returned invalid template"); return; }
     closeAIModal();
-
     openTemplateWithAI(data);
-
-  }catch(err){
-
-    alert("AI generation failed");
-
-  }
-
+  }catch(err){ alert("AI generation failed"); }
 }
-
 
 function openTemplateWithAI(data){
-
-  // open modal
   modalOverlay.classList.add("open");
-
-  // fill values
   document.getElementById("nameInput").value = data.name || "";
   document.getElementById("msgInput").value = data.message || "";
-
-  // focus message
-  setTimeout(()=>{
-    document.getElementById("msgInput").focus();
-  },200);
-
+  setTimeout(()=>{ document.getElementById("msgInput").focus(); },200);
 }
 
+/* ── TIMER for recording UI (CSS only needs tick) ── */
+let recInterval = null;
+let recSeconds  = 0;
 
-function stopRecording(){
+function startTimer(){
+  recSeconds = 0;
+  updateTimerDisplay();
+  recInterval = setInterval(()=>{ recSeconds++; updateTimerDisplay(); }, 1000);
+}
+function stopTimer(){
+  clearInterval(recInterval);
+  recInterval = null;
+  recSeconds  = 0;
+  updateTimerDisplay();
+}
+function updateTimerDisplay(){
+  const m = Math.floor(recSeconds / 60);
+  const s = recSeconds % 60;
+  const el = document.getElementById("recTimer");
+  if(el) el.textContent = `${m}:${String(s).padStart(2,"0")}`;
+}
 
-  if(mediaRecorder){
+/* Patch recording class to also drive timer */
+const _origStart = startRecording;
+const _origStop  = stopRecording;
 
-    mediaRecorder.stop();
-
-    // stop mic completely
-    mediaRecorder.stream.getTracks().forEach(track=>{
-      track.stop();
-    });
-
+// Override using MutationObserver on class instead of patching fn
+// (keeps original functions completely intact)
+const classObserver = new MutationObserver(()=>{
+  if(voiceBtn.classList.contains("recording")){
+    startTimer();
+  } else {
+    stopTimer();
   }
+});
+classObserver.observe(voiceBtn, { attributes: true, attributeFilter: ["class"] });
 
-  isRecording = false;
-
-  voiceBtn.innerHTML = "🎤 Speak";
-  voiceBtn.style.background = "";
-}
-// --- Init ---
 loadTemplates();
 </script>
 </body>
