@@ -947,6 +947,21 @@
             opacity: 1; transform: translateY(0) scale(1);
             transition: opacity 0.48s ease, transform 0.48s cubic-bezier(0.22,1,0.36,1);
         }
+
+
+        /* Edit button variant (fits your design) */
+.edit-btn {
+    background: transparent !important;
+    border: 1.5px solid rgba(59,130,246,0.45);
+    color: #60a5fa;
+    box-shadow: none !important;
+}
+
+.edit-btn:hover {
+    background: rgba(59,130,246,0.12) !important;
+    border-color: #60a5fa !important;
+    transform: translateY(-1px);
+}
     </style>
 </head>
 <body>
@@ -982,6 +997,8 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         Team Status
     </a>
+
+     <button class="nav-btn" data-sheet="other">Other Leads</button>
 
     <div class="drawer-section-label">Tools</div>
 
@@ -1093,6 +1110,48 @@
             <button id="closeTemplateModal" class="SelectBtn">Cancel</button>
             <button id="confirmSendBtn" class="SelectBtn">Send →</button>
         </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+
+        <h2>Edit Lead</h2>
+
+        <form id="editForm">
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="text" id="editPhone" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" id="editName" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" id="editLocation" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Property Type</label>
+                <input type="text" id="editProperty" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Budget</label>
+                <input type="text" id="editBudget" class="form-input">
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Update Lead
+            </button>
+
+        </form>
     </div>
 </div>
 
@@ -1324,7 +1383,7 @@ const API_CONFIG = {
 
             grid.innerHTML = leads.map((lead, index) => `
                 <div class="lead-card" style="animation-delay: ${index * 0.1}s" data-name="${lead['Lead Name'] || lead.Name || ''}" 
-     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}">
+     data-phone="${formatPhone(lead['Phone Number'])}" data-location="${lead['Location Interested In'] || lead['Property Location'] || lead['Operating City'] || ''}" data-budget="${lead['Budget Range'] || ''}" >
 
       <input type="checkbox" class="select-checkbox">
                     <div class="card-header">
@@ -1394,6 +1453,10 @@ const API_CONFIG = {
         style="background:#e74c3c;margin-top:10px;"
         onclick="deleteLead('${lead._id}')">
     🗑 Delete Lead
+</button>
+
+<button class="assign-btn edit-btn" onclick="openEditModal(this)">
+    ✏️ Edit Lead
 </button>
                 </div>
             `).join('');
@@ -2234,6 +2297,88 @@ document.getElementById("leadSearch").addEventListener("input", function(){
     });
 
 });
+
+function openEditModal(btn){
+
+    const card = btn.closest('.lead-card');
+
+    document.getElementById('editPhone').value = card.dataset.phone || "";
+    document.getElementById('editName').value = card.dataset.name || "";
+    document.getElementById('editLocation').value = card.dataset.location || "";
+    document.getElementById('editProperty').value = card.dataset.property || "";
+    document.getElementById('editBudget').value = card.dataset.budget || "";
+
+    document.getElementById('editModal').classList.add('active');
+}
+
+function closeEditModal(){
+    document.getElementById('editModal').classList.remove('active');
+    document.getElementById('editForm').reset();
+}
+
+document.getElementById('editForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+
+    const submitBtn = e.target.querySelector('.submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Updating...";
+
+    
+
+    const rawPhone = document.getElementById('editPhone').value;
+
+// remove + and any non-numeric characters
+const phone = rawPhone.replace(/[^0-9]/g, '');
+    const name = document.getElementById('editName').value;
+    const location = document.getElementById('editLocation').value;
+    const property = document.getElementById('editProperty').value;
+    const budget = document.getElementById('editBudget').value;
+
+    const collectionMap = {
+        buying: "Leads",
+        rental: "RentalLeads",
+        selling: "sellingLeads",
+        agent: "agentLeads",
+        other: "Leads"
+    };
+
+    const collection = collectionMap[currentSheet];
+
+    try{
+
+        await fetch("https://api.phishnix.site/api/modify-document", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                collection: collection,
+                "Phone Number": phone,
+                set: {
+                    "Lead Name": name,
+                    "Location Interested In": location,
+                    "Property Type": property,
+                    "Budget Range": budget,
+                    "Date": new Date().toLocaleDateString('en-GB').replace(/\//g, '-')
+                }
+            })
+        });
+
+        alert("✅ Lead updated successfully");
+
+        closeEditModal();
+        fetchLeads(currentSheet);
+
+    }catch(err){
+        console.error(err);
+        alert("❌ Update failed");
+    }finally{
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Update Lead";
+    }
+});
+
+
 </script>
 </body>
 </html>
