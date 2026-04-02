@@ -682,6 +682,51 @@
             transform: translateY(0) scale(1);
             transition: opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1);
         }
+
+        .btn-reassign {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    width: 100%;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: transparent;
+    border: 1.5px solid rgba(59,130,246,.4);
+    color: #60a5fa;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+
+.btn-reassign:hover {
+    background: rgba(59,130,246,.12);
+    border-color: #60a5fa;
+    transform: translateY(-1px);
+}
+
+
+#reassignModal .modal-box {
+    max-width: 420px;
+}
+
+#employeeSelect {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    color: var(--text);
+    background: var(--bg);
+    margin-bottom: 20px;
+    transition: all .2s ease;
+}
+
+#employeeSelect:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-glow);
+}
     </style>
 </head>
 <body>
@@ -775,6 +820,21 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="reassignModal">
+    <div class="modal-box">
+        <h3>Reassign Lead</h3>
+
+        <input type="hidden" id="reassignPhone">
+
+        <select id="newEmployeeSelect"></select>
+
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeReassignModal()">Cancel</button>
+            <button class="modal-send" onclick="submitReassign()">Reassign →</button>
+        </div>
+    </div>
+</div>
+
 <script>
 /* ─── State ─────────────────────────────────── */
 let selectMode = false;
@@ -858,6 +918,11 @@ function actionsBlock(id, phone) {
                     <polyline points="12 5 19 12 12 19"/>
                 </svg>
             </a>
+
+            <button class="btn-reassign" onclick="openReassignModal('${cleanPhoneForURL(phone)}')">
+                🔄 Reassign
+            </button>
+
             <button class="btn-delete" onclick="deleteLead('${id}')">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <polyline points="3 6 5 6 21 6"/>
@@ -1137,6 +1202,94 @@ document.getElementById('leadSearch').addEventListener('input', function() {
         card.style.display = match ? '' : 'none';
     });
 });
+
+
+
+
+//re assign logic 
+const TEAM_ASSIGN_URL = "https://api.phishnix.site/api/get-team-assign";
+let currentLeadId = null;
+
+let reassignPhone = null;
+
+async function openReassignModal(phone) {
+    reassignPhone = phone;
+    document.getElementById('reassignPhone').value = phone;
+
+    try {
+        const res = await fetch(TEAM_ASSIGN_URL);
+        const employees = await res.json();
+
+        const select = document.getElementById('newEmployeeSelect');
+        select.innerHTML = '';
+
+        employees.forEach(emp => {
+            select.innerHTML += `
+                <option value="${emp['Employee number']}">
+                    ${emp['Employee name']}
+                </option>
+            `;
+        });
+
+        document.getElementById('reassignModal').classList.add('open');
+
+    } catch (err) {
+        console.error(err);
+        alert("Error loading employees");
+    }
+}
+
+function closeReassignModal() {
+    document.getElementById('reassignModal').classList.remove('open');
+}
+
+async function submitReassign() {
+
+    const phone = document.getElementById('reassignPhone').value;
+    const newEmployeeNumber = document.getElementById('newEmployeeSelect').value;
+
+    const collectionName = "Leads";
+
+    showLoader();
+
+    try {
+        const res = await fetch(`${BASE_API_URL}/reassign-lead`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                phone: phone.replace("+", ""),
+                newEmployeeNumber: newEmployeeNumber,
+                collection: collectionName
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            alert("✅ Lead reassigned successfully");
+            closeReassignModal();
+            fetchLeads(currentSheet);
+        } else {
+            alert("❌ " + data.error);
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Error reassigning");
+    } finally {
+        hideLoader();
+    }
+}
+
+
+function getCollectionName(type) {
+    if (type === 'selling') return 'sellingLeads';
+    if (type === 'rental') return 'RentalLeads';
+    if (type === 'agent') return 'agentLeads';
+    if (type === 'buying') return 'Leads';
+}
+
+
 
 /* ─── Init ──────────────────────────────────── */
 window.addEventListener('load', () => {
